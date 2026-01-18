@@ -1,6 +1,6 @@
-# TanStack Template
+# TanStack Keys
 
-This is a template for creating new TanStack libraries.
+This is a keys for creating new TanStack libraries.
 
 ## What's Included
 
@@ -11,9 +11,9 @@ This is a template for creating new TanStack libraries.
 - Documentation structure
 - Example applications
 
-## How to Use This Template
+## How to Use This Keys
 
-See the TEMPLATE_GUIDE.md in the root directory for instructions on customizing this template for your new library.
+See the TEMPLATE_GUIDE.md in the root directory for instructions on customizing this keys for your new library.
 
 ## Features
 

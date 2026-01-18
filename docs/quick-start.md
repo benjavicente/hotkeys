@@ -3,21 +3,21 @@
 ## Core Usage
 
 ```typescript
-import { createTemplate } from '@tanstack/template'
+import { createTemplate } from '@tanstack/keys'
 
-const template = createTemplate({ message: 'Hello!' })
-template.greet() // Logs: Hello!
+const keys = createTemplate({ message: 'Hello!' })
+keys.greet() // Logs: Hello!
 ```
 
 ## React Usage
 
 ```tsx
-import { createTemplate } from '@tanstack/template'
-import { useTemplate } from '@tanstack/react-template'
+import { createTemplate } from '@tanstack/keys'
+import { useTemplate } from '@tanstack/react-keys'
 
 function App() {
-  const template = React.useMemo(() => createTemplate(), [])
-  const state = useTemplate(template)
+  const keys = React.useMemo(() => createTemplate(), [])
+  const state = useTemplate(keys)
 
   return <div>{state.message}</div>
 }
@@ -26,12 +26,12 @@ function App() {
 ## Solid Usage
 
 ```tsx
-import { createTemplate } from '@tanstack/template'
-import { createTemplateSignal } from '@tanstack/solid-template'
+import { createTemplate } from '@tanstack/keys'
+import { createTemplateSignal } from '@tanstack/solid-keys'
 
 function App() {
-  const template = createTemplate()
-  const state = createTemplateSignal(template)
+  const keys = createTemplate()
+  const state = createTemplateSignal(keys)
 
   return <div>{state().message}</div>
 }
@@ -42,7 +42,7 @@ function App() {
 ### React
 
 ```tsx
-import { TemplateDevtools } from '@tanstack/react-template-devtools'
+import { TemplateDevtools } from '@tanstack/react-keys-devtools'
 
 function App() {
   // ... your code
@@ -59,7 +59,7 @@ function App() {
 ### Solid
 
 ```tsx
-import { TemplateDevtools } from '@tanstack/solid-template-devtools'
+import { TemplateDevtools } from '@tanstack/solid-keys-devtools'
 
 function App() {
   // ... your code

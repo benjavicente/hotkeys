@@ -1,9 +1,9 @@
 ---
-id: "@tanstack/solid-template"
-title: "@tanstack/solid-template"
+id: "@tanstack/solid-keys"
+title: "@tanstack/solid-keys"
 ---
 
-# @tanstack/solid-template
+# @tanstack/solid-keys
 
 ## Functions
 

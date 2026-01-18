@@ -1,9 +1,9 @@
 ---
-id: "@tanstack/react-template"
-title: "@tanstack/react-template"
+id: "@tanstack/react-keys"
+title: "@tanstack/react-keys"
 ---
 
-# @tanstack/react-template
+# @tanstack/react-keys
 
 ## Functions
 

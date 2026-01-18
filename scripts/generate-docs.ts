@@ -7,34 +7,34 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url))
 await generateReferenceDocs({
   packages: [
     {
-      name: 'template',
-      entryPoints: [resolve(__dirname, '../packages/template/src/index.ts')],
-      tsconfig: resolve(__dirname, '../packages/template/tsconfig.docs.json'),
+      name: 'keys',
+      entryPoints: [resolve(__dirname, '../packages/keys/src/index.ts')],
+      tsconfig: resolve(__dirname, '../packages/keys/tsconfig.docs.json'),
       outputDir: resolve(__dirname, '../docs/reference'),
     },
     {
-      name: 'react-template',
+      name: 'react-keys',
       entryPoints: [
-        resolve(__dirname, '../packages/react-template/src/index.ts'),
+        resolve(__dirname, '../packages/react-keys/src/index.ts'),
       ],
       tsconfig: resolve(
         __dirname,
-        '../packages/react-template/tsconfig.docs.json',
+        '../packages/react-keys/tsconfig.docs.json',
       ),
       outputDir: resolve(__dirname, '../docs/framework/react/reference'),
-      exclude: ['packages/template/**/*'],
+      exclude: ['packages/keys/**/*'],
     },
     {
-      name: 'solid-template',
+      name: 'solid-keys',
       entryPoints: [
-        resolve(__dirname, '../packages/solid-template/src/index.ts'),
+        resolve(__dirname, '../packages/solid-keys/src/index.ts'),
       ],
       tsconfig: resolve(
         __dirname,
-        '../packages/solid-template/tsconfig.docs.json',
+        '../packages/solid-keys/tsconfig.docs.json',
       ),
       outputDir: resolve(__dirname, '../docs/framework/solid/reference'),
-      exclude: ['packages/template/**/*'],
+      exclude: ['packages/keys/**/*'],
     },
   ],
 })

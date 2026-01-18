@@ -1,19 +1,19 @@
 import { render } from 'solid-js/web'
-import { createTemplate } from '@tanstack/template'
-import { createTemplateSignal } from '@tanstack/solid-template'
-import { TemplateDevtools } from '@tanstack/solid-template-devtools'
+import { createTemplate } from '@tanstack/keys'
+import { createTemplateSignal } from '@tanstack/solid-keys'
+import { TemplateDevtools } from '@tanstack/solid-keys-devtools'
 
 function App() {
-  const template = createTemplate({
+  const keys = createTemplate({
     message: 'Hello from Solid with Devtools!',
   })
-  const state = createTemplateSignal(template)
+  const state = createTemplateSignal(keys)
 
   return (
     <div style={{ padding: '20px', 'font-family': 'sans-serif' }}>
-      <h1>TanStack Template - Solid Devtools Example</h1>
+      <h1>TanStack Keys - Solid Devtools Example</h1>
       <p>Message: {state().message}</p>
-      <button onClick={() => template.greet()}>Greet (check console)</button>
+      <button onClick={() => keys.greet()}>Greet (check console)</button>
 
       <hr style={{ margin: '20px 0' }} />
 

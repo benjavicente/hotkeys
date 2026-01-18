@@ -1,17 +1,17 @@
 # Solid Adapter
 
-The Solid adapter provides primitives for using Template in Solid applications.
+The Solid adapter provides primitives for using Keys in Solid applications.
 
 ## createTemplateSignal
 
-The `createTemplateSignal` primitive connects a Template instance to Solid's reactivity system.
+The `createTemplateSignal` primitive connects a Keys instance to Solid's reactivity system.
 
 ```tsx
-import { createTemplateSignal } from '@tanstack/solid-template'
+import { createTemplateSignal } from '@tanstack/solid-keys'
 
 function MyComponent() {
-  const template = createTemplate()
-  const state = createTemplateSignal(template)
+  const keys = createTemplate()
+  const state = createTemplateSignal(keys)
 
   return <div>{state().message}</div>
 }
@@ -19,11 +19,11 @@ function MyComponent() {
 
 ### Parameters
 
-- `template`: Template - The template instance to connect
+- `keys`: Keys - The keys instance to connect
 
 ### Returns
 
-Returns a Solid signal containing the current state from the template's store.
+Returns a Solid signal containing the current state from the keys's store.
 
 ## Examples
 

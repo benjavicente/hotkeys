@@ -6,17 +6,17 @@ title: createTemplateSignal
 # Function: createTemplateSignal()
 
 ```ts
-function createTemplateSignal(template): Accessor<{
+function createTemplateSignal(keys): Accessor<{
 }>;
 ```
 
-Defined in: [solid-template/src/createTemplate.ts:5](https://github.com/TanStack/template/blob/main/packages/solid-template/src/createTemplate.ts#L5)
+Defined in: solid-keys/src/createTemplate.ts:5
 
 ## Parameters
 
-### template
+### keys
 
-`Template`
+`Keys`
 
 ## Returns
 

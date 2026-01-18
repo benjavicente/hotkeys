@@ -1,17 +1,17 @@
 # React Adapter
 
-The React adapter provides hooks for using Template in React applications.
+The React adapter provides hooks for using Keys in React applications.
 
 ## useTemplate
 
-The `useTemplate` hook connects a Template instance to React's reactivity system.
+The `useTemplate` hook connects a Keys instance to React's reactivity system.
 
 ```tsx
-import { useTemplate } from '@tanstack/react-template'
+import { useTemplate } from '@tanstack/react-keys'
 
 function MyComponent() {
-  const template = React.useMemo(() => createTemplate(), [])
-  const state = useTemplate(template)
+  const keys = React.useMemo(() => createTemplate(), [])
+  const state = useTemplate(keys)
 
   return <div>{state.message}</div>
 }
@@ -19,11 +19,11 @@ function MyComponent() {
 
 ### Parameters
 
-- `template`: Template - The template instance to connect
+- `keys`: Keys - The keys instance to connect
 
 ### Returns
 
-Returns the current state from the template's store.
+Returns the current state from the keys's store.
 
 ## Examples
 

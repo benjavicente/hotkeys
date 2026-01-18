@@ -1,21 +1,21 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { createTemplate } from '@tanstack/template'
-import { useTemplate } from '@tanstack/react-template'
-import { TemplateDevtools } from '@tanstack/react-template-devtools'
+import { createTemplate } from '@tanstack/keys'
+import { useTemplate } from '@tanstack/react-keys'
+import { TemplateDevtools } from '@tanstack/react-keys-devtools'
 
 function App() {
-  const template = React.useMemo(
+  const keys = React.useMemo(
     () => createTemplate({ message: 'Hello from React with Devtools!' }),
     [],
   )
-  const state = useTemplate(template)
+  const state = useTemplate(keys)
 
   return (
     <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
-      <h1>TanStack Template - React Devtools Example</h1>
+      <h1>TanStack Keys - React Devtools Example</h1>
       <p>Message: {state.message}</p>
-      <button onClick={() => template.greet()}>Greet (check console)</button>
+      <button onClick={() => keys.greet()}>Greet (check console)</button>
 
       <hr style={{ margin: '20px 0' }} />
 

@@ -6,16 +6,16 @@ title: useTemplate
 # Function: useTemplate()
 
 ```ts
-function useTemplate(template): object;
+function useTemplate(keys): object;
 ```
 
-Defined in: [react-template/src/useTemplate.ts:5](https://github.com/TanStack/template/blob/main/packages/react-template/src/useTemplate.ts#L5)
+Defined in: react-keys/src/useTemplate.ts:5
 
 ## Parameters
 
-### template
+### keys
 
-`Template`
+`Keys`
 
 ## Returns
 

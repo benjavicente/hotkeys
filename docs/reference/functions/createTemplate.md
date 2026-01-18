@@ -6,10 +6,10 @@ title: createTemplate
 # Function: createTemplate()
 
 ```ts
-function createTemplate(options?): Template;
+function createTemplate(options?): Keys;
 ```
 
-Defined in: [hello.ts:17](https://github.com/TanStack/template/blob/main/packages/template/src/hello.ts#L17)
+Defined in: hello.ts:17
 
 ## Parameters
 
@@ -19,4 +19,4 @@ Defined in: [hello.ts:17](https://github.com/TanStack/template/blob/main/package
 
 ## Returns
 
-[`Template`](../classes/Template.md)
+[`Keys`](../classes/Keys.md)

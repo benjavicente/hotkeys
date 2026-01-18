@@ -1,13 +1,13 @@
 ---
-id: "@tanstack/template"
-title: "@tanstack/template"
+id: "@tanstack/keys"
+title: "@tanstack/keys"
 ---
 
-# @tanstack/template
+# @tanstack/keys
 
 ## Classes
 
-- [Template](classes/Template.md)
+- [Keys](classes/Keys.md)
 
 ## Interfaces
 

@@ -1,5 +1,5 @@
 {
-  "name": "@tanstack/template-example-solid-devtools",
+  "name": "@tanstack/keys-example-solid-devtools",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,9 +9,9 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/solid-template": "^0.0.0",
-    "@tanstack/solid-template-devtools": "^0.0.0",
-    "@tanstack/template": "^0.0.0",
+    "@tanstack/solid-keys": "^0.0.0",
+    "@tanstack/solid-keys-devtools": "^0.0.0",
+    "@tanstack/keys": "^0.0.0",
     "solid-js": "^1.9.10"
   },
   "devDependencies": {

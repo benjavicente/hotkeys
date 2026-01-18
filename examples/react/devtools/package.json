@@ -1,5 +1,5 @@
 {
-  "name": "@tanstack/template-example-react-devtools",
+  "name": "@tanstack/keys-example-react-devtools",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,9 +9,9 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@tanstack/react-template": "^0.0.0",
-    "@tanstack/react-template-devtools": "^0.0.0",
-    "@tanstack/template": "^0.0.0",
+    "@tanstack/react-keys": "^0.0.0",
+    "@tanstack/react-keys-devtools": "^0.0.0",
+    "@tanstack/keys": "^0.0.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3"
   },

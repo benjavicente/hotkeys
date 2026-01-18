@@ -77,12 +77,12 @@ importers:
 
   examples/react/basic:
     dependencies:
-      '@tanstack/react-template':
+      '@tanstack/keys':
         specifier: ^0.0.0
-        version: link:../../../packages/react-template
-      '@tanstack/template':
+        version: link:../../../packages/keys
+      '@tanstack/react-keys':
         specifier: ^0.0.0
-        version: link:../../../packages/template
+        version: link:../../../packages/react-keys
       react:
         specifier: ^19.2.3
         version: 19.2.3
@@ -108,15 +108,15 @@ importers:
 
   examples/react/devtools:
     dependencies:
-      '@tanstack/react-template':
+      '@tanstack/keys':
         specifier: ^0.0.0
-        version: link:../../../packages/react-template
-      '@tanstack/react-template-devtools':
+        version: link:../../../packages/keys
+      '@tanstack/react-keys':
         specifier: ^0.0.0
-        version: link:../../../packages/react-template-devtools
-      '@tanstack/template':
+        version: link:../../../packages/react-keys
+      '@tanstack/react-keys-devtools':
         specifier: ^0.0.0
-        version: link:../../../packages/template
+        version: link:../../../packages/react-keys-devtools
       react:
         specifier: ^19.2.3
         version: 19.2.3
@@ -142,12 +142,12 @@ importers:
 
   examples/solid/basic:
     dependencies:
-      '@tanstack/solid-template':
+      '@tanstack/keys':
         specifier: ^0.0.0
-        version: link:../../../packages/solid-template
-      '@tanstack/template':
+        version: link:../../../packages/keys
+      '@tanstack/solid-keys':
         specifier: ^0.0.0
-        version: link:../../../packages/template
+        version: link:../../../packages/solid-keys
       solid-js:
         specifier: ^1.9.10
         version: 1.9.10
@@ -164,15 +164,15 @@ importers:
 
   examples/solid/devtools:
     dependencies:
-      '@tanstack/solid-template':
+      '@tanstack/keys':
         specifier: ^0.0.0
-        version: link:../../../packages/solid-template
-      '@tanstack/solid-template-devtools':
+        version: link:../../../packages/keys
+      '@tanstack/solid-keys':
         specifier: ^0.0.0
-        version: link:../../../packages/solid-template-devtools
-      '@tanstack/template':
+        version: link:../../../packages/solid-keys
+      '@tanstack/solid-keys-devtools':
         specifier: ^0.0.0
-        version: link:../../../packages/template
+        version: link:../../../packages/solid-keys-devtools
       solid-js:
         specifier: ^1.9.10
         version: 1.9.10
@@ -187,14 +187,26 @@ importers:
         specifier: ^2.11.10
         version: 2.11.10(@testing-library/jest-dom@6.9.1)(solid-js@1.9.10)(vite@7.3.1(@types/node@25.0.9)(jiti@2.6.1)(yaml@2.8.2))
 
-  packages/react-template:
+  packages/keys:
     dependencies:
+      '@tanstack/store':
+        specifier: ^0.8.0
+        version: 0.8.0
+
+  packages/keys-devtools:
+    dependencies:
+      '@tanstack/keys':
+        specifier: workspace:*
+        version: link:../keys
+
+  packages/react-keys:
+    dependencies:
+      '@tanstack/keys':
+        specifier: workspace:*
+        version: link:../keys
       '@tanstack/react-store':
         specifier: ^0.8.0
         version: 0.8.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      '@tanstack/template':
-        specifier: workspace:*
-        version: link:../template
       react-dom:
         specifier: '>=16.8'
         version: 19.2.3(react@19.2.3)
@@ -221,11 +233,11 @@ importers:
         specifier: ^19.2.3
         version: 19.2.3
 
-  packages/react-template-devtools:
+  packages/react-keys-devtools:
     dependencies:
-      '@tanstack/template-devtools':
+      '@tanstack/keys-devtools':
         specifier: workspace:*
-        version: link:../template-devtools
+        version: link:../keys-devtools
       react-dom:
         specifier: '>=16.8'
         version: 19.2.3(react@19.2.3)
@@ -237,14 +249,14 @@ importers:
         specifier: ^19.2.3
         version: 19.2.3
 
-  packages/solid-template:
+  packages/solid-keys:
     dependencies:
+      '@tanstack/keys':
+        specifier: workspace:*
+        version: link:../keys
       '@tanstack/solid-store':
         specifier: ^0.8.0
         version: 0.8.0(solid-js@1.9.10)
-      '@tanstack/template':
-        specifier: workspace:*
-        version: link:../template
     devDependencies:
       '@types/node':
         specifier: ^25.0.7
@@ -253,27 +265,15 @@ importers:
         specifier: ^1.9.5
         version: 1.9.10
 
-  packages/solid-template-devtools:
+  packages/solid-keys-devtools:
     dependencies:
-      '@tanstack/template-devtools':
+      '@tanstack/keys-devtools':
         specifier: workspace:*
-        version: link:../template-devtools
+        version: link:../keys-devtools
     devDependencies:
       solid-js:
         specifier: ^1.9.5
         version: 1.9.10
-
-  packages/template:
-    dependencies:
-      '@tanstack/store':
-        specifier: ^0.8.0
-        version: 0.8.0
-
-  packages/template-devtools:
-    dependencies:
-      '@tanstack/template':
-        specifier: workspace:*
-        version: link:../template
 
 packages:
 

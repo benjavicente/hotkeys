@@ -1,0 +1,61 @@
+{
+  "name": "@tanstack/react-keys-devtools",
+  "version": "0.0.0",
+  "description": "React devtools for TanStack Keys",
+  "author": "Tanner Linsley",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TanStack/keys.git",
+    "directory": "packages/react-keys-devtools"
+  },
+  "homepage": "https://tanstack.com/keys",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/tannerlinsley"
+  },
+  "keywords": [
+    "react",
+    "tanstack",
+    "keys",
+    "devtools"
+  ],
+  "scripts": {
+    "clean": "premove ./build ./dist",
+    "test:eslint": "eslint ./src",
+    "test:lib": "vitest --passWithNoTests",
+    "test:lib:dev": "pnpm test:lib --watch",
+    "test:types": "tsc",
+    "build": "tsdown"
+  },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.cts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "dependencies": {
+    "@tanstack/keys-devtools": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.8",
+    "react": "^19.2.3"
+  },
+  "peerDependencies": {
+    "react": ">=16.8",
+    "react-dom": ">=16.8"
+  }
+}
