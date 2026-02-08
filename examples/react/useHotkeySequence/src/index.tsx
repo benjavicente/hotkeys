@@ -1,6 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { useHotkey, useHotkeySequence } from '@tanstack/react-keys'
+import { keysDevtoolsPlugin } from '@tanstack/react-keys-devtools'
+import { TanStackDevtools } from '@tanstack/react-devtools'
 import './index.css'
 
 function App() {
@@ -180,6 +182,8 @@ function VimEditor() {
           Press <kbd>Escape</kbd> to clear history
         </p>
       </main>
+
+      <TanStackDevtools plugins={[keysDevtoolsPlugin()]} />
     </div>
   )
 }

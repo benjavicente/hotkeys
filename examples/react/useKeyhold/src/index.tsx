@@ -1,5 +1,7 @@
 import ReactDOM from 'react-dom/client'
 import { useKeyHold } from '@tanstack/react-keys'
+import { keysDevtoolsPlugin } from '@tanstack/react-keys-devtools'
+import { TanStackDevtools } from '@tanstack/react-devtools'
 import './index.css'
 
 function App() {
@@ -98,6 +100,8 @@ function ShiftIndicator() {
           </ul>
         </section>
       </main>
+
+      <TanStackDevtools plugins={[keysDevtoolsPlugin()]} />
     </div>
   )
 }

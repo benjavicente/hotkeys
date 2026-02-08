@@ -1,6 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { formatForDisplay, useHotkey } from '@tanstack/react-keys'
+import { keysDevtoolsPlugin } from '@tanstack/react-keys-devtools'
+import { TanStackDevtools } from '@tanstack/react-devtools'
 import type { Hotkey } from '@tanstack/react-keys'
 import './index.css'
 
@@ -29,24 +31,6 @@ function App() {
 
   // Type-safe refs for useHotkey (HTMLTextAreaElement extends HTMLElement)
   const editorRefForHotkey = editorRef as React.RefObject<HTMLElement | null>
-
-  React.useEffect(() => {
-    //console log all key events
-    document.addEventListener('keydown', (event) => {
-      console.log('Key down:', event.key, event.code, event.location)
-    })
-    document.addEventListener('keyup', (event) => {
-      console.log('Key up:', event.key, event.code, event.location)
-    })
-    return () => {
-      document.removeEventListener('keydown', (event) => {
-        console.log('Key down:', event.key, event.code, event.location)
-      })
-      document.removeEventListener('keyup', (event) => {
-        console.log('Key up:', event.key, event.code, event.location)
-      })
-    }
-  }, [])
 
   // ============================================================================
   // Basic Hotkeys
@@ -870,6 +854,8 @@ useHotkey(
 )`}</pre>
         </section>
       </main>
+
+      <TanStackDevtools plugins={[keysDevtoolsPlugin()]} />
     </div>
   )
 }

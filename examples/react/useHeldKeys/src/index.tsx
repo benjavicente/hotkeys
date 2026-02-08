@@ -1,17 +1,26 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { useHeldKeys } from '@tanstack/react-keys'
+import {
+  formatKeyForDebuggingDisplay,
+  useHeldKeys,
+  useHeldKeyCodes,
+} from '@tanstack/react-keys'
+import { keysDevtoolsPlugin } from '@tanstack/react-keys-devtools'
+import { TanStackDevtools } from '@tanstack/react-devtools'
 import './index.css'
 
 function App() {
   const heldKeys = useHeldKeys()
+  const heldCodes = useHeldKeyCodes()
 
   // Track history of key combinations
   const [history, setHistory] = React.useState<Array<string>>([])
 
   React.useEffect(() => {
     if (heldKeys.length > 0) {
-      const combo = heldKeys.join(' + ')
+      const combo = heldKeys
+        .map((k) => formatKeyForDebuggingDisplay(k))
+        .join(' + ')
       setHistory((h) => {
         // Only add if different from last entry
         if (h[h.length - 1] !== combo) {
@@ -21,6 +30,8 @@ function App() {
       })
     }
   }, [heldKeys])
+
+  console.log('heldKeys', heldKeys)
 
   return (
     <div className="app">
@@ -37,12 +48,24 @@ function App() {
           <h2>Currently Held Keys</h2>
           <div className="key-display">
             {heldKeys.length > 0 ? (
-              heldKeys.map((key, index) => (
-                <React.Fragment key={key}>
-                  {index > 0 && <span className="plus">+</span>}
-                  <kbd className="large">{key}</kbd>
-                </React.Fragment>
-              ))
+              heldKeys.map((key, index) => {
+                const code = heldCodes[key]
+                return (
+                  <React.Fragment key={key}>
+                    {index > 0 && <span className="plus">+</span>}
+                    <kbd className="large">
+                      {formatKeyForDebuggingDisplay(key)}
+                      {code && code !== key && (
+                        <small className="code-label">
+                          {formatKeyForDebuggingDisplay(code, {
+                            source: 'code',
+                          })}
+                        </small>
+                      )}
+                    </kbd>
+                  </React.Fragment>
+                )
+              })
             ) : (
               <span className="placeholder">Press any keys...</span>
             )}
@@ -103,6 +126,8 @@ function KeyDisplay() {
           </ul>
         </section>
       </main>
+
+      <TanStackDevtools plugins={[keysDevtoolsPlugin()]} />
     </div>
   )
 }

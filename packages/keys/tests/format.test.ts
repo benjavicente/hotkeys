@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { formatForDisplay, formatHotkey, formatWithLabels } from '../src/format'
+import {
+  formatForDisplay,
+  formatHotkey,
+  formatKeyForDebuggingDisplay,
+  formatWithLabels,
+} from '../src/format'
 import type { ParsedHotkey } from '../src/hotkey'
 
 describe('formatHotkey', () => {
@@ -159,5 +164,146 @@ describe('formatWithLabels', () => {
   it('should handle multiple modifiers', () => {
     expect(formatWithLabels('Mod+Shift+S', 'mac')).toBe('Shift+Cmd+S')
     expect(formatWithLabels('Mod+Shift+S', 'windows')).toBe('Ctrl+Shift+S')
+  })
+})
+
+describe('formatKeyForDebuggingDisplay', () => {
+  describe('macOS', () => {
+    it('should show symbol-prefixed modifier labels', () => {
+      expect(
+        formatKeyForDebuggingDisplay('Meta', { platform: 'mac' }),
+      ).toBe('⌘ Mod (Cmd)')
+      expect(
+        formatKeyForDebuggingDisplay('Control', { platform: 'mac' }),
+      ).toBe('⌃ Ctrl')
+      expect(
+        formatKeyForDebuggingDisplay('Alt', { platform: 'mac' }),
+      ).toBe('⌥ Opt')
+      expect(
+        formatKeyForDebuggingDisplay('Shift', { platform: 'mac' }),
+      ).toBe('⇧ Shift')
+    })
+
+    it('should annotate only the Mod key (Meta on Mac)', () => {
+      const meta = formatKeyForDebuggingDisplay('Meta', { platform: 'mac' })
+      expect(meta).toContain('Mod')
+      const ctrl = formatKeyForDebuggingDisplay('Control', { platform: 'mac' })
+      expect(ctrl).not.toContain('Mod')
+    })
+  })
+
+  describe('Windows', () => {
+    it('should show Mod annotation on Control', () => {
+      expect(
+        formatKeyForDebuggingDisplay('Control', { platform: 'windows' }),
+      ).toBe('Mod (Ctrl)')
+    })
+
+    it('should show Win for Meta', () => {
+      expect(
+        formatKeyForDebuggingDisplay('Meta', { platform: 'windows' }),
+      ).toBe('Win')
+    })
+
+    it('should show Alt and Shift without symbols', () => {
+      expect(
+        formatKeyForDebuggingDisplay('Alt', { platform: 'windows' }),
+      ).toBe('Alt')
+      expect(
+        formatKeyForDebuggingDisplay('Shift', { platform: 'windows' }),
+      ).toBe('Shift')
+    })
+  })
+
+  describe('Linux', () => {
+    it('should show Mod annotation on Control', () => {
+      expect(
+        formatKeyForDebuggingDisplay('Control', { platform: 'linux' }),
+      ).toBe('Mod (Ctrl)')
+    })
+
+    it('should show Super for Meta', () => {
+      expect(
+        formatKeyForDebuggingDisplay('Meta', { platform: 'linux' }),
+      ).toBe('Super')
+    })
+
+    it('should show Alt and Shift without symbols', () => {
+      expect(
+        formatKeyForDebuggingDisplay('Alt', { platform: 'linux' }),
+      ).toBe('Alt')
+      expect(
+        formatKeyForDebuggingDisplay('Shift', { platform: 'linux' }),
+      ).toBe('Shift')
+    })
+  })
+
+  describe('special keys', () => {
+    it('should use display symbols for special keys', () => {
+      expect(
+        formatKeyForDebuggingDisplay('ArrowUp', { platform: 'mac' }),
+      ).toBe('↑')
+      expect(
+        formatKeyForDebuggingDisplay('ArrowDown', { platform: 'windows' }),
+      ).toBe('↓')
+      expect(
+        formatKeyForDebuggingDisplay('Escape', { platform: 'linux' }),
+      ).toBe('Esc')
+      expect(
+        formatKeyForDebuggingDisplay('Space', { platform: 'mac' }),
+      ).toBe('␣')
+      expect(
+        formatKeyForDebuggingDisplay('Enter', { platform: 'mac' }),
+      ).toBe('↵')
+      expect(
+        formatKeyForDebuggingDisplay('Backspace', { platform: 'mac' }),
+      ).toBe('⌫')
+      expect(
+        formatKeyForDebuggingDisplay('Tab', { platform: 'mac' }),
+      ).toBe('⇥')
+    })
+  })
+
+  describe('regular keys', () => {
+    it('should pass through regular keys unchanged', () => {
+      expect(
+        formatKeyForDebuggingDisplay('A', { platform: 'mac' }),
+      ).toBe('A')
+      expect(
+        formatKeyForDebuggingDisplay('z', { platform: 'windows' }),
+      ).toBe('z')
+      expect(
+        formatKeyForDebuggingDisplay('1', { platform: 'linux' }),
+      ).toBe('1')
+    })
+  })
+
+  describe('source: code', () => {
+    it('should pass through event.code values unchanged', () => {
+      expect(
+        formatKeyForDebuggingDisplay('MetaLeft', { source: 'code' }),
+      ).toBe('MetaLeft')
+      expect(
+        formatKeyForDebuggingDisplay('ShiftRight', { source: 'code' }),
+      ).toBe('ShiftRight')
+      expect(
+        formatKeyForDebuggingDisplay('KeyA', { source: 'code' }),
+      ).toBe('KeyA')
+      expect(
+        formatKeyForDebuggingDisplay('Space', { source: 'code' }),
+      ).toBe('Space')
+      expect(
+        formatKeyForDebuggingDisplay('Escape', { source: 'code' }),
+      ).toBe('Escape')
+    })
+
+    it('should ignore platform when source is code', () => {
+      expect(
+        formatKeyForDebuggingDisplay('MetaLeft', { source: 'code', platform: 'mac' }),
+      ).toBe('MetaLeft')
+      expect(
+        formatKeyForDebuggingDisplay('MetaLeft', { source: 'code', platform: 'windows' }),
+      ).toBe('MetaLeft')
+    })
   })
 })

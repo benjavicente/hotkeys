@@ -1,5 +1,9 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["src", "vite.config.ts", "tests"],
+  "compilerOptions": {
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js"
+  },
+  "include": ["src", "vitest.config.ts", "tests"],
   "exclude": ["eslint.config.js"]
 }

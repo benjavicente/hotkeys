@@ -5,8 +5,16 @@ import { KeyStateTracker } from '../src/key-state-tracker'
 /**
  * Helper to create and dispatch a KeyboardEvent
  */
-function dispatchKey(type: 'keydown' | 'keyup', key: string): KeyboardEvent {
-  const event = new KeyboardEvent(type, { key, bubbles: true })
+function dispatchKey(
+  type: 'keydown' | 'keyup',
+  key: string,
+  code?: string,
+): KeyboardEvent {
+  const event = new KeyboardEvent(type, {
+    key,
+    code: code ?? key,
+    bubbles: true,
+  })
   document.dispatchEvent(event)
   return event
 }
@@ -92,7 +100,7 @@ describe('KeyStateTracker', () => {
       const tracker = KeyStateTracker.getInstance()
 
       expect(tracker.store).toBeDefined()
-      expect(tracker.store.state).toEqual({ heldKeys: [] })
+      expect(tracker.store.state).toEqual({ heldKeys: [], heldCodes: {} })
     })
 
     it('should update store state on key changes', () => {
@@ -128,31 +136,133 @@ describe('KeyStateTracker', () => {
     })
   })
 
-  describe('subscriptions (backwards compatibility)', () => {
-    it('should notify subscribers on key changes', () => {
+  describe('event.code tracking', () => {
+    it('should track event.code alongside key name', () => {
       const tracker = KeyStateTracker.getInstance()
-      const listener = vi.fn()
 
-      tracker.subscribe(listener)
-      // Subscriber is called immediately with current state
-      expect(listener).toHaveBeenCalledWith([])
-
-      listener.mockClear()
-      dispatchKey('keydown', 'a')
-      expect(listener).toHaveBeenCalledWith(['A'])
+      dispatchKey('keydown', 'a', 'KeyA')
+      expect(tracker.store.state.heldCodes).toEqual({ A: 'KeyA' })
     })
 
-    it('should allow unsubscribing', () => {
+    it('should remove code on keyup', () => {
       const tracker = KeyStateTracker.getInstance()
-      const listener = vi.fn()
 
-      const unsubscribe = tracker.subscribe(listener)
-      listener.mockClear()
+      dispatchKey('keydown', 'a', 'KeyA')
+      expect(tracker.store.state.heldCodes).toEqual({ A: 'KeyA' })
 
-      unsubscribe()
+      dispatchKey('keyup', 'a', 'KeyA')
+      expect(tracker.store.state.heldCodes).toEqual({})
+    })
+
+    it('should track multiple codes simultaneously', () => {
+      const tracker = KeyStateTracker.getInstance()
+
+      dispatchKey('keydown', 'Control', 'ControlLeft')
+      dispatchKey('keydown', 'Shift', 'ShiftRight')
+      dispatchKey('keydown', 'a', 'KeyA')
+
+      expect(tracker.store.state.heldCodes).toEqual({
+        Control: 'ControlLeft',
+        Shift: 'ShiftRight',
+        A: 'KeyA',
+      })
+    })
+
+    it('should clear non-modifier codes when modifier is released', () => {
+      const tracker = KeyStateTracker.getInstance()
+
+      dispatchKey('keydown', 'Meta', 'MetaLeft')
+      dispatchKey('keydown', 's', 'KeyS')
+      expect(tracker.store.state.heldCodes).toEqual({
+        Meta: 'MetaLeft',
+        S: 'KeyS',
+      })
+
+      // Only Meta keyup fires — S keyup swallowed by macOS
+      dispatchKey('keyup', 'Meta', 'MetaLeft')
+      expect(tracker.store.state.heldCodes).toEqual({})
+    })
+
+    it('should distinguish left vs right modifier codes', () => {
+      const tracker = KeyStateTracker.getInstance()
+
+      dispatchKey('keydown', 'Shift', 'ShiftLeft')
+      expect(tracker.store.state.heldCodes).toEqual({ Shift: 'ShiftLeft' })
+
+      // Same key name but different code — should not duplicate in heldKeys
+      // (second keydown is ignored since 'Shift' is already in heldKeysSet)
+      dispatchKey('keyup', 'Shift', 'ShiftLeft')
+      expect(tracker.store.state.heldCodes).toEqual({})
+    })
+  })
+
+  describe('modifier release clears stuck non-modifier keys (macOS workaround)', () => {
+    it('should clear non-modifier keys when Meta is released (simulates Cmd+S on macOS)', () => {
+      const tracker = KeyStateTracker.getInstance()
+
+      // Simulate Cmd+S: keydown Meta, keydown S, then only keyup Meta
+      // (macOS swallows the keyup for S)
+      dispatchKey('keydown', 'Meta')
+      dispatchKey('keydown', 's')
+      expect(tracker.getHeldKeys()).toContain('Meta')
+      expect(tracker.getHeldKeys()).toContain('S')
+
+      // Only Meta keyup fires — S keyup is swallowed by macOS
+      dispatchKey('keyup', 'Meta')
+      expect(tracker.isKeyHeld('Meta')).toBe(false)
+      expect(tracker.isKeyHeld('S')).toBe(false)
+      expect(tracker.getHeldKeys()).toEqual([])
+    })
+
+    it('should clear non-modifier keys when Control is released', () => {
+      const tracker = KeyStateTracker.getInstance()
+
+      dispatchKey('keydown', 'Control')
+      dispatchKey('keydown', 'c')
+      dispatchKey('keyup', 'Control')
+
+      expect(tracker.isKeyHeld('Control')).toBe(false)
+      expect(tracker.isKeyHeld('C')).toBe(false)
+      expect(tracker.getHeldKeys()).toEqual([])
+    })
+
+    it('should clear non-modifier keys when Alt is released', () => {
+      const tracker = KeyStateTracker.getInstance()
+
+      dispatchKey('keydown', 'Alt')
+      dispatchKey('keydown', 'Tab')
+      dispatchKey('keyup', 'Alt')
+
+      expect(tracker.isKeyHeld('Alt')).toBe(false)
+      expect(tracker.isKeyHeld('Tab')).toBe(false)
+      expect(tracker.getHeldKeys()).toEqual([])
+    })
+
+    it('should keep other modifier keys when one modifier is released', () => {
+      const tracker = KeyStateTracker.getInstance()
+
+      // Ctrl+Shift+S — release Ctrl, Shift should remain
+      dispatchKey('keydown', 'Control')
+      dispatchKey('keydown', 'Shift')
+      dispatchKey('keydown', 's')
+      dispatchKey('keyup', 'Control')
+
+      expect(tracker.isKeyHeld('Control')).toBe(false)
+      expect(tracker.isKeyHeld('Shift')).toBe(true)
+      // S should be cleared (non-modifier)
+      expect(tracker.isKeyHeld('S')).toBe(false)
+    })
+
+    it('should not clear non-modifier keys when a non-modifier key is released', () => {
+      const tracker = KeyStateTracker.getInstance()
 
       dispatchKey('keydown', 'a')
-      expect(listener).not.toHaveBeenCalled()
+      dispatchKey('keydown', 'b')
+      dispatchKey('keyup', 'a')
+
+      // b should still be held — only modifier releases trigger cleanup
+      expect(tracker.isKeyHeld('A')).toBe(false)
+      expect(tracker.isKeyHeld('B')).toBe(true)
     })
   })
 

@@ -105,11 +105,6 @@ export function useHotkey(
   const prevTargetRef = useRef<HTMLElement | Document | Window | null>(null)
   const prevHotkeyRef = useRef<string | null>(null)
 
-  // Resolve target - unwrap React refs
-  const resolvedTarget = isRef(options.target)
-    ? options.target.current
-    : (options.target ?? (typeof document !== 'undefined' ? document : null))
-
   // Format hotkey string
   const hotkeyString: Hotkey =
     typeof hotkey === 'string' ? hotkey : (formatHotkey(hotkey) as Hotkey)
@@ -118,7 +113,13 @@ export function useHotkey(
   const { target: _target, ...optionsWithoutTarget } = options
 
   useEffect(() => {
-    // Skip if no valid target (ref not attached yet, or SSR)
+    // Resolve target inside the effect so refs are already attached after mount
+    const resolvedTarget = isRef(optionsRef.current.target)
+      ? optionsRef.current.target.current
+      : (optionsRef.current.target ??
+        (typeof document !== 'undefined' ? document : null))
+
+    // Skip if no valid target (SSR or ref still null)
     if (!resolvedTarget) {
       return
     }
@@ -159,7 +160,7 @@ export function useHotkey(
         registrationRef.current = null
       }
     }
-  }, [resolvedTarget, hotkeyString])
+  }, [hotkeyString])
 
   // Sync callback and options on EVERY render (outside useEffect)
   // This avoids stale closures - the callback always has access to latest state

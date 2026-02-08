@@ -7,6 +7,8 @@ import {
   useHotkeyRecorder,
   type Hotkey,
 } from '@tanstack/react-keys'
+import { keysDevtoolsPlugin } from '@tanstack/react-keys-devtools'
+import { TanStackDevtools } from '@tanstack/react-devtools'
 import './index.css'
 
 interface ShortcutActions {
@@ -293,6 +295,7 @@ function App() {
 }`}</pre>
         </section>
       </main>
+      <TanStackDevtools plugins={[keysDevtoolsPlugin()]} />
     </div>
   )
 }

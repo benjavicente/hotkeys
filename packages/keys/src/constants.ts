@@ -49,6 +49,36 @@ export function detectPlatform(): 'mac' | 'windows' | 'linux' {
 // =============================================================================
 
 /**
+ * Canonical order for modifiers in normalized hotkey strings.
+ *
+ * Defines the standard order in which modifiers should appear when formatting
+ * hotkeys. This ensures consistent, predictable output across the library.
+ *
+ * Order: Control → Alt → Shift → Meta
+ *
+ * @example
+ * ```ts
+ * // Input: 'Shift+Control+Meta+S'
+ * // Normalized: 'Control+Alt+Shift+Meta+S' (following MODIFIER_ORDER)
+ * ```
+ */
+export const MODIFIER_ORDER: Array<CanonicalModifier> = [
+  'Control',
+  'Alt',
+  'Shift',
+  'Meta',
+]
+
+/**
+ * Set of canonical modifier key names for fast lookup.
+ *
+ * Derived from `MODIFIER_ORDER` to ensure consistency. Used to detect when
+ * a modifier is released so we can clear non-modifier keys whose keyup events
+ * may have been swallowed by the OS (e.g. macOS Cmd+key combos).
+ */
+export const MODIFIER_KEYS = new Set<string>(MODIFIER_ORDER)
+
+/**
  * Maps modifier key aliases to their canonical form or platform-adaptive 'Mod'.
  *
  * This map allows users to write hotkeys using various aliases (e.g., 'Ctrl', 'Cmd', 'Option')
@@ -482,24 +512,3 @@ export const KEY_DISPLAY_SYMBOLS: Record<string, string> = {
   Tab: '⇥',
   Space: '␣',
 }
-
-/**
- * Canonical order for modifiers in normalized hotkey strings.
- *
- * Defines the standard order in which modifiers should appear when formatting
- * hotkeys. This ensures consistent, predictable output across the library.
- *
- * Order: Control → Alt → Shift → Meta
- *
- * @example
- * ```ts
- * // Input: 'Shift+Control+Meta+S'
- * // Normalized: 'Control+Alt+Shift+Meta+S' (following MODIFIER_ORDER)
- * ```
- */
-export const MODIFIER_ORDER: Array<CanonicalModifier> = [
-  'Control',
-  'Alt',
-  'Shift',
-  'Meta',
-]

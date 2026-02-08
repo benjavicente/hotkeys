@@ -151,3 +151,111 @@ export function formatWithLabels(
 
   return parts.join('+')
 }
+
+// =============================================================================
+// Debugging Display Labels
+// =============================================================================
+
+/**
+ * Maps canonical modifier names to debugging-friendly labels per platform.
+ */
+const MODIFIER_DEBUG_LABELS: Record<string, Record<string, string>> = {
+  mac: { Meta: 'Mod (Cmd)', Control: 'Ctrl', Alt: 'Opt', Shift: 'Shift' },
+  windows: { Control: 'Mod (Ctrl)', Meta: 'Win', Alt: 'Alt', Shift: 'Shift' },
+  linux: { Control: 'Mod (Ctrl)', Meta: 'Super', Alt: 'Alt', Shift: 'Shift' },
+}
+
+/**
+ * Options for formatting a single key for debugging display.
+ */
+export interface FormatKeyDebuggingOptions {
+  /** The target platform. Defaults to auto-detection. */
+  platform?: 'mac' | 'windows' | 'linux'
+  /**
+   * Whether the input value comes from `event.key` or `event.code`.
+   *
+   * - `'key'` (default): Applies rich platform-aware formatting (modifier
+   *   labels, special-key symbols, etc.).
+   * - `'code'`: Returns the value unchanged — physical key codes like
+   *   `"MetaLeft"` or `"KeyA"` are already descriptive for debugging.
+   */
+  source?: 'key' | 'code'
+}
+
+/**
+ * Formats a single key name for debugging/devtools display.
+ *
+ * Unlike `formatForDisplay` which formats full hotkey strings for end-user UIs,
+ * this function formats individual key names (from `event.key`) with rich
+ * platform-aware labels suitable for debugging tools and developer-facing displays.
+ *
+ * Features:
+ * - Modifier keys show their platform role (e.g., "Mod (Cmd)" for Meta on Mac)
+ * - On macOS, modifier keys are prefixed with their symbol (e.g., "⌘ Mod (Cmd)")
+ * - Special keys use display symbols (ArrowUp -> "↑", Escape -> "Esc")
+ * - Regular keys pass through unchanged
+ *
+ * @param key - A single key name (e.g., "Meta", "Shift", "ArrowUp", "A")
+ * @param options - Formatting options
+ * @returns A formatted label suitable for debugging display
+ *
+ * @example
+ * ```ts
+ * // On macOS:
+ * formatKeyForDebuggingDisplay('Meta')    // '⌘ Mod (Cmd)'
+ * formatKeyForDebuggingDisplay('Control') // '⌃ Ctrl'
+ * formatKeyForDebuggingDisplay('Alt')     // '⌥ Opt'
+ * formatKeyForDebuggingDisplay('Shift')   // '⇧ Shift'
+ *
+ * // On Windows:
+ * formatKeyForDebuggingDisplay('Control') // 'Mod (Ctrl)'
+ * formatKeyForDebuggingDisplay('Meta')    // 'Win'
+ *
+ * // Special keys (all platforms):
+ * formatKeyForDebuggingDisplay('ArrowUp') // '↑'
+ * formatKeyForDebuggingDisplay('Escape')  // 'Esc'
+ * formatKeyForDebuggingDisplay('Space')   // '␣'
+ *
+ * // Regular keys pass through:
+ * formatKeyForDebuggingDisplay('A')       // 'A'
+ *
+ * // With source: 'code', values pass through unchanged:
+ * formatKeyForDebuggingDisplay('MetaLeft', { source: 'code' })  // 'MetaLeft'
+ * formatKeyForDebuggingDisplay('KeyA', { source: 'code' })      // 'KeyA'
+ * ```
+ */
+export function formatKeyForDebuggingDisplay(
+  key: string,
+  options: FormatKeyDebuggingOptions = {},
+): string {
+  // For event.code values, pass through unchanged — they're already
+  // descriptive for debugging (e.g. "MetaLeft", "KeyA", "ShiftRight").
+  if (options.source === 'code') {
+    return key
+  }
+
+  const platform = options.platform ?? detectPlatform()
+
+  // Check if it's a modifier key
+  const modLabel = MODIFIER_DEBUG_LABELS[platform]?.[key]
+  if (modLabel) {
+    // On Mac, prefix modifier labels with their symbol
+    if (platform === 'mac') {
+      const symbol =
+        MAC_MODIFIER_SYMBOLS[key as keyof typeof MAC_MODIFIER_SYMBOLS]
+      if (symbol) {
+        return `${symbol} ${modLabel}`
+      }
+    }
+    return modLabel
+  }
+
+  // Check if it's a special key with a display symbol
+  const symbol = KEY_DISPLAY_SYMBOLS[key]
+  if (symbol) {
+    return symbol
+  }
+
+  // Regular key — pass through
+  return key
+}

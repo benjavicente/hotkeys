@@ -1,3 +1,4 @@
+import { Store } from '@tanstack/store'
 import { detectPlatform } from './constants'
 import { parseHotkey } from './parse'
 import { matchesKeyboardEvent } from './match'
@@ -58,6 +59,8 @@ export interface HotkeyRegistration {
   options: HotkeyOptions
   /** Whether this registration has fired and needs reset (for requireReset) */
   hasFired: boolean
+  /** How many times this registration's callback has been triggered */
+  triggerCount: number
   /** The resolved target element for this registration */
   target: HTMLElement | Document | Window
 }
@@ -158,7 +161,28 @@ function generateId(): string {
 export class HotkeyManager {
   static #instance: HotkeyManager | null = null
 
-  #registrations: Map<string, HotkeyRegistration> = new Map()
+  /**
+   * The TanStack Store containing all hotkey registrations.
+   * Use this to subscribe to registration changes or access current registrations.
+   *
+   * @example
+   * ```ts
+   * const manager = HotkeyManager.getInstance()
+   *
+   * // Subscribe to registration changes
+   * const unsubscribe = manager.registrations.subscribe(() => {
+   *   console.log('Registrations changed:', manager.registrations.state.size)
+   * })
+   *
+   * // Access current registrations
+   * for (const [id, reg] of manager.registrations.state) {
+   *   console.log(reg.hotkey, reg.options.enabled)
+   * }
+   * ```
+   */
+  readonly registrations: Store<Map<string, HotkeyRegistration>> = new Store(
+    new Map(),
+  )
   #platform: 'mac' | 'windows' | 'linux'
   #targetListeners: Map<
     HTMLElement | Document | Window,
@@ -257,10 +281,11 @@ export class HotkeyManager {
         platform,
       },
       hasFired: false,
+      triggerCount: 0,
       target,
     }
 
-    this.#registrations.set(id, registration)
+    this.registrations.setState((prev) => new Map(prev).set(id, registration))
 
     // Track registration for this target
     if (!this.#targetRegistrations.has(target)) {
@@ -281,23 +306,28 @@ export class HotkeyManager {
         manager.#unregister(id)
       },
       get callback() {
-        const reg = manager.#registrations.get(id)
+        const reg = manager.registrations.state.get(id)
         return reg?.callback ?? callback
       },
       set callback(newCallback: HotkeyCallback) {
-        const reg = manager.#registrations.get(id)
+        const reg = manager.registrations.state.get(id)
         if (reg) {
           reg.callback = newCallback
         }
       },
       setOptions: (newOptions: Partial<HotkeyOptions>) => {
-        const reg = manager.#registrations.get(id)
-        if (reg) {
-          reg.options = { ...reg.options, ...newOptions }
-        }
+        manager.registrations.setState((prev) => {
+          const reg = prev.get(id)
+          if (reg) {
+            const next = new Map(prev)
+            next.set(id, { ...reg, options: { ...reg.options, ...newOptions } })
+            return next
+          }
+          return prev
+        })
       },
       get isActive() {
-        return manager.#registrations.has(id)
+        return manager.registrations.state.has(id)
       },
     }
 
@@ -308,7 +338,7 @@ export class HotkeyManager {
    * Unregisters a hotkey by its registration ID.
    */
   #unregister(id: string): void {
-    const registration = this.#registrations.get(id)
+    const registration = this.registrations.state.get(id)
     if (!registration) {
       return
     }
@@ -316,7 +346,11 @@ export class HotkeyManager {
     const target = registration.target
 
     // Remove registration
-    this.#registrations.delete(id)
+    this.registrations.setState((prev) => {
+      const next = new Map(prev)
+      next.delete(id)
+      return next
+    })
 
     // Remove from target registrations tracking
     const targetRegs = this.#targetRegistrations.get(target)
@@ -388,7 +422,7 @@ export class HotkeyManager {
     }
 
     for (const id of targetRegs) {
-      const registration = this.#registrations.get(id)
+      const registration = this.registrations.state.get(id)
       if (!registration) {
         continue
       }
@@ -476,6 +510,13 @@ export class HotkeyManager {
       event.stopPropagation()
     }
 
+    registration.triggerCount++
+
+    // Notify the store so subscribers (e.g. devtools) see the updated count.
+    // We create a new Map but keep the same registration reference to preserve
+    // identity for mutation-based fields like hasFired.
+    this.registrations.setState((prev) => new Map(prev))
+
     const context: HotkeyCallbackContext = {
       hotkey: registration.hotkey,
       parsedHotkey: registration.parsedHotkey,
@@ -541,7 +582,7 @@ export class HotkeyManager {
     hotkey: Hotkey,
     target: HTMLElement | Document | Window,
   ): HotkeyRegistration | null {
-    for (const registration of this.#registrations.values()) {
+    for (const registration of this.registrations.state.values()) {
       if (registration.hotkey === hotkey && registration.target === target) {
         return registration
       }
@@ -649,10 +690,50 @@ export class HotkeyManager {
   }
 
   /**
+   * Triggers a registration's callback programmatically from devtools.
+   * Creates a synthetic KeyboardEvent and invokes the callback.
+   *
+   * @param id - The registration ID to trigger
+   * @returns True if the registration was found and triggered
+   */
+  triggerRegistration(id: string): boolean {
+    const registration = this.registrations.state.get(id)
+    if (!registration) {
+      return false
+    }
+
+    const parsed = registration.parsedHotkey
+    const syntheticEvent = new KeyboardEvent(
+      registration.options.eventType ?? 'keydown',
+      {
+        key: parsed.key,
+        ctrlKey: parsed.ctrl,
+        shiftKey: parsed.shift,
+        altKey: parsed.alt,
+        metaKey: parsed.meta,
+        bubbles: true,
+        cancelable: true,
+      },
+    )
+
+    registration.triggerCount++
+
+    // Notify the store so subscribers (e.g. devtools) see the updated count
+    this.registrations.setState((prev) => new Map(prev))
+
+    registration.callback(syntheticEvent, {
+      hotkey: registration.hotkey,
+      parsedHotkey: registration.parsedHotkey,
+    })
+
+    return true
+  }
+
+  /**
    * Gets the number of registered hotkeys.
    */
   getRegistrationCount(): number {
-    return this.#registrations.size
+    return this.registrations.state.size
   }
 
   /**
@@ -666,7 +747,7 @@ export class HotkeyManager {
     hotkey: Hotkey,
     target?: HTMLElement | Document | Window,
   ): boolean {
-    for (const registration of this.#registrations.values()) {
+    for (const registration of this.registrations.state.values()) {
       if (registration.hotkey === hotkey) {
         // If target is specified, both must match
         if (target === undefined || registration.target === target) {
@@ -686,7 +767,7 @@ export class HotkeyManager {
       this.#removeListenersForTarget(target)
     }
 
-    this.#registrations.clear()
+    this.registrations.setState(() => new Map())
     this.#targetListeners.clear()
     this.#targetRegistrations.clear()
   }

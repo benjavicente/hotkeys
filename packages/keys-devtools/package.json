@@ -17,7 +17,9 @@
   "keywords": [
     "tanstack",
     "keys",
-    "devtools"
+    "devtools",
+    "hotkeys",
+    "keyboard"
   ],
   "scripts": {
     "clean": "premove ./build ./dist",
@@ -30,14 +32,10 @@
     "build": "tsdown"
   },
   "type": "module",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.cts",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": {
-      "require": "./dist/index.cjs",
-      "import": "./dist/index.js"
-    },
+    ".": "./dist/index.js",
+    "./production": "./dist/production.js",
     "./package.json": "./package.json"
   },
   "sideEffects": false,
@@ -47,5 +45,18 @@
   "files": [
     "dist/",
     "src"
-  ]
+  ],
+  "peerDependencies": {
+    "@tanstack/keys": "workspace:*"
+  },
+  "dependencies": {
+    "@tanstack/devtools-ui": "^0.4.4",
+    "@tanstack/devtools-utils": "^0.3.0",
+    "clsx": "^2.1.1",
+    "goober": "^2.1.18",
+    "solid-js": "^1.9.11"
+  },
+  "devDependencies": {
+    "vite-plugin-solid": "^2.11.10"
+  }
 }

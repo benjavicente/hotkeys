@@ -1,14 +1,19 @@
 import { Store } from '@tanstack/store'
-import { normalizeKeyName } from './constants'
+import { MODIFIER_KEYS, normalizeKeyName } from './constants'
 
 /**
  * State interface for the KeyStateTracker.
  */
 export interface KeyStateTrackerState {
   /**
-   * Array of currently held key names.
+   * Array of currently held key names (normalized, e.g. "Control", "A").
    */
   heldKeys: Array<string>
+  /**
+   * Map from normalized key name to the physical `event.code` (e.g. "KeyA", "ShiftLeft").
+   * Useful for debugging which physical key was pressed.
+   */
+  heldCodes: Record<string, string>
 }
 
 /**
@@ -17,14 +22,9 @@ export interface KeyStateTrackerState {
 function getDefaultKeyStateTrackerState(): KeyStateTrackerState {
   return {
     heldKeys: [],
+    heldCodes: {},
   }
 }
-
-/**
- * Listener function type for key state changes.
- * @deprecated Use `store.subscribe()` or `useStore()` from `@tanstack/react-store` instead.
- */
-export type KeyStateListener = (keys: Array<string>) => void
 
 /**
  * Singleton tracker for currently held keyboard keys.
@@ -38,7 +38,7 @@ export type KeyStateListener = (keys: Array<string>) => void
  * State Management:
  * - Uses TanStack Store for reactive state management
  * - State can be accessed via `tracker.store.state` when using the class directly
- * - When using framework adapters (React/Solid), use `useStore` hooks for reactive state
+ * - When using framework adapters (React), use `useHeldKeys` and `useHeldKeyCodes` hooks for reactive state
  *
  * @example
  * ```ts
@@ -72,6 +72,7 @@ export class KeyStateTracker {
   )
 
   #heldKeysSet: Set<string> = new Set()
+  #heldCodesMap: Map<string, string> = new Map()
   #keydownListener: ((event: KeyboardEvent) => void) | null = null
   #keyupListener: ((event: KeyboardEvent) => void) | null = null
   #blurListener: (() => void) | null = null
@@ -112,6 +113,7 @@ export class KeyStateTracker {
       const key = normalizeKeyName(event.key)
       if (!this.#heldKeysSet.has(key)) {
         this.#heldKeysSet.add(key)
+        this.#heldCodesMap.set(key, event.code)
         this.#syncState()
       }
     }
@@ -120,14 +122,30 @@ export class KeyStateTracker {
       const key = normalizeKeyName(event.key)
       if (this.#heldKeysSet.has(key)) {
         this.#heldKeysSet.delete(key)
-        this.#syncState()
+        this.#heldCodesMap.delete(key)
       }
+
+      // When a modifier key is released, clear any non-modifier keys still
+      // marked as held. On macOS, the OS intercepts modifier+key combos
+      // (e.g. Cmd+S) and swallows the keyup event for the non-modifier key,
+      // leaving it permanently stuck in the held set.
+      if (MODIFIER_KEYS.has(key)) {
+        for (const heldKey of this.#heldKeysSet) {
+          if (!MODIFIER_KEYS.has(heldKey)) {
+            this.#heldKeysSet.delete(heldKey)
+            this.#heldCodesMap.delete(heldKey)
+          }
+        }
+      }
+
+      this.#syncState()
     }
 
     // Clear all keys when window loses focus (keys might be released while not focused)
     this.#blurListener = () => {
       if (this.#heldKeysSet.size > 0) {
         this.#heldKeysSet.clear()
+        this.#heldCodesMap.clear()
         this.#syncState()
       }
     }
@@ -143,6 +161,7 @@ export class KeyStateTracker {
   #syncState(): void {
     this.store.setState(() => ({
       heldKeys: Array.from(this.#heldKeysSet),
+      heldCodes: Object.fromEntries(this.#heldCodesMap),
     }))
   }
 
@@ -211,28 +230,12 @@ export class KeyStateTracker {
   }
 
   /**
-   * Subscribes to key state changes.
-   *
-   * @deprecated Use `tracker.store.subscribe()` or `useStore()` from `@tanstack/react-store` instead.
-   * @param listener - Function to call when key state changes
-   * @returns Unsubscribe function
-   */
-  subscribe(listener: KeyStateListener): () => void {
-    // Immediately call with current state for backwards compatibility
-    listener(this.getHeldKeys())
-
-    // Subscribe to store changes
-    return this.store.subscribe(() => {
-      listener(this.getHeldKeys())
-    })
-  }
-
-  /**
    * Destroys the tracker and removes all listeners.
    */
   destroy(): void {
     this.#removeListeners()
     this.#heldKeysSet.clear()
+    this.#heldCodesMap.clear()
     this.store.setState(() => getDefaultKeyStateTrackerState())
   }
 }
