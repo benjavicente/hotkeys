@@ -12,7 +12,7 @@ function useHotkeySequence(
    options): void;
 ```
 
-Defined in: [useHotkeySequence.ts:49](https://github.com/TanStack/hotkeys/blob/main/packages/react-hotkeys/src/useHotkeySequence.ts#L49)
+Defined in: [useHotkeySequence.ts:49](https://github.com/TanStack/keys/blob/main/packages/react-hotkeys/src/useHotkeySequence.ts#L49)
 
 React hook for registering a keyboard shortcut sequence (Vim-style).
 

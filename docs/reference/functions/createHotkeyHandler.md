@@ -12,7 +12,7 @@ function createHotkeyHandler(
    options): (event) => void;
 ```
 
-Defined in: [match.ts:122](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/match.ts#L122)
+Defined in: [match.ts:122](https://github.com/TanStack/keys/blob/main/packages/hotkeys/src/match.ts#L122)
 
 Creates a keyboard event handler that calls the callback when the hotkey matches.
 
@@ -60,7 +60,7 @@ A function that can be used as an event handler
 const handler = createHotkeyHandler('Mod+S', (event, { hotkey, parsedHotkey }) => {
   console.log(`${hotkey} was pressed`)
   handleSave()
-}, { preventDefault: true })
+})
 
 document.addEventListener('keydown', handler)
 ```

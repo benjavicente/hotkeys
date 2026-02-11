@@ -137,8 +137,8 @@ export class SequenceManager {
       callback,
       options: {
         timeout: DEFAULT_SEQUENCE_TIMEOUT,
-        preventDefault: false,
-        stopPropagation: false,
+        preventDefault: true,
+        stopPropagation: true,
         enabled: true,
         ...options,
         platform,

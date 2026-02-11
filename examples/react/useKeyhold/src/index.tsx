@@ -1,6 +1,7 @@
 import ReactDOM from 'react-dom/client'
 import { useKeyHold } from '@tanstack/react-hotkeys'
-import { keysDevtoolsPlugin } from '@tanstack/react-hotkeys-devtools'
+import { HotkeysProvider } from '@tanstack/react-hotkeys'
+import { hotkeysDevtoolsPlugin } from '@tanstack/react-hotkeys-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import './index.css'
 
@@ -101,9 +102,20 @@ function ShiftIndicator() {
         </section>
       </main>
 
-      <TanStackDevtools plugins={[keysDevtoolsPlugin()]} />
+      <TanStackDevtools plugins={[hotkeysDevtoolsPlugin()]} />
     </div>
   )
 }
 
-ReactDOM.createRoot(document.getElementById('root')!).render(<App />)
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  // optionally, provide default options to an optional HotkeysProvider
+  <HotkeysProvider
+  // defaultOptions={{
+  //   hotkey: {
+  //     preventDefault: true,
+  //   },
+  // }}
+  >
+    <App />
+  </HotkeysProvider>,
+)

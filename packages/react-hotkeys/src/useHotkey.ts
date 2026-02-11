@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { formatHotkey, getHotkeyManager } from '@tanstack/hotkeys'
+import { useDefaultHotkeysOptions } from './HotkeysProvider'
 import type {
   Hotkey,
   HotkeyCallback,
@@ -47,7 +48,7 @@ export interface UseHotkeyOptions extends Omit<HotkeyOptions, 'target'> {
  *   useHotkey('Mod+S', (event, { hotkey }) => {
  *     console.log(`Save triggered, count is ${count}`)
  *     handleSave()
- *   }, { preventDefault: true })
+ *   })
  *
  *   return <button onClick={() => setCount(c => c + 1)}>Count: {count}</button>
  * }
@@ -74,7 +75,7 @@ export interface UseHotkeyOptions extends Omit<HotkeyOptions, 'target'> {
  *   // Scoped to a specific element
  *   useHotkey('Mod+S', () => {
  *     save()
- *   }, { target: editorRef, preventDefault: true })
+ *   }, { target: editorRef })
  *
  *   return <div ref={editorRef}>...</div>
  * }
@@ -85,6 +86,11 @@ export function useHotkey(
   callback: HotkeyCallback,
   options: UseHotkeyOptions = {},
 ): void {
+  const mergedOptions = {
+    ...useDefaultHotkeysOptions().hotkey,
+    ...options,
+  } as UseHotkeyOptions
+
   const manager = getHotkeyManager()
 
   // Stable ref for registration handle
@@ -93,12 +99,12 @@ export function useHotkey(
   // Refs to capture current values for use in effect without adding dependencies
   // This follows TanStack Pacer's pattern - values are synced on every render
   const callbackRef = useRef(callback)
-  const optionsRef = useRef(options)
+  const optionsRef = useRef(mergedOptions)
   const managerRef = useRef(manager)
 
   // Update refs on every render
   callbackRef.current = callback
-  optionsRef.current = options
+  optionsRef.current = mergedOptions
   managerRef.current = manager
 
   // Track previous target and hotkey to detect changes requiring re-registration
@@ -110,7 +116,7 @@ export function useHotkey(
     typeof hotkey === 'string' ? hotkey : (formatHotkey(hotkey) as Hotkey)
 
   // Extract options without target (target is handled separately)
-  const { target: _target, ...optionsWithoutTarget } = options
+  const { target: _target, ...optionsWithoutTarget } = mergedOptions
 
   useEffect(() => {
     // Resolve target inside the effect so refs are already attached after mount

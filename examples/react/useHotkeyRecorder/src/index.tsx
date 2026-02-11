@@ -7,7 +7,8 @@ import {
   useHotkeyRecorder,
   type Hotkey,
 } from '@tanstack/react-hotkeys'
-import { keysDevtoolsPlugin } from '@tanstack/react-hotkeys-devtools'
+import { HotkeysProvider } from '@tanstack/react-hotkeys'
+import { hotkeysDevtoolsPlugin } from '@tanstack/react-hotkeys-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import './index.css'
 
@@ -121,7 +122,6 @@ function App() {
     },
     {
       enabled: !isRecording && shortcuts.save !== '',
-      preventDefault: true,
     },
   )
 
@@ -133,7 +133,6 @@ function App() {
     },
     {
       enabled: !isRecording && shortcuts.open !== '',
-      preventDefault: true,
     },
   )
 
@@ -145,7 +144,6 @@ function App() {
     },
     {
       enabled: !isRecording && shortcuts.new !== '',
-      preventDefault: true,
     },
   )
 
@@ -157,7 +155,6 @@ function App() {
     },
     {
       enabled: !isRecording && shortcuts.close !== '',
-      preventDefault: true,
     },
   )
 
@@ -169,7 +166,6 @@ function App() {
     },
     {
       enabled: !isRecording && shortcuts.undo !== '',
-      preventDefault: true,
     },
   )
 
@@ -181,7 +177,6 @@ function App() {
     },
     {
       enabled: !isRecording && shortcuts.redo !== '',
-      preventDefault: true,
     },
   )
 
@@ -295,7 +290,7 @@ function App() {
 }`}</pre>
         </section>
       </main>
-      <TanStackDevtools plugins={[keysDevtoolsPlugin()]} />
+      <TanStackDevtools plugins={[hotkeysDevtoolsPlugin()]} />
     </div>
   )
 }
@@ -361,4 +356,15 @@ function ShortcutListItem({
   )
 }
 
-ReactDOM.createRoot(document.getElementById('root')!).render(<App />)
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  // optionally, provide default options to an optional HotkeysProvider
+  <HotkeysProvider
+  // defaultOptions={{
+  //   hotkey: {
+  //     preventDefault: true,
+  //   },
+  // }}
+  >
+    <App />
+  </HotkeysProvider>,
+)

@@ -5,7 +5,7 @@ title: UseHotkeySequenceOptions
 
 # Interface: UseHotkeySequenceOptions
 
-Defined in: [useHotkeySequence.ts:9](https://github.com/TanStack/hotkeys/blob/main/packages/react-hotkeys/src/useHotkeySequence.ts#L9)
+Defined in: [useHotkeySequence.ts:9](https://github.com/TanStack/keys/blob/main/packages/react-hotkeys/src/useHotkeySequence.ts#L9)
 
 ## Extends
 
@@ -19,6 +19,6 @@ Defined in: [useHotkeySequence.ts:9](https://github.com/TanStack/hotkeys/blob/ma
 optional enabled: boolean;
 ```
 
-Defined in: [useHotkeySequence.ts:14](https://github.com/TanStack/hotkeys/blob/main/packages/react-hotkeys/src/useHotkeySequence.ts#L14)
+Defined in: [useHotkeySequence.ts:14](https://github.com/TanStack/keys/blob/main/packages/react-hotkeys/src/useHotkeySequence.ts#L14)
 
 Whether the sequence is enabled. Defaults to true.

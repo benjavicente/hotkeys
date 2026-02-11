@@ -1,7 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { formatForDisplay, useHotkey } from '@tanstack/react-hotkeys'
-import { keysDevtoolsPlugin } from '@tanstack/react-hotkeys-devtools'
+import { HotkeysProvider } from '@tanstack/react-hotkeys'
+import { hotkeysDevtoolsPlugin } from '@tanstack/react-hotkeys-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import type { Hotkey } from '@tanstack/react-hotkeys'
 import './index.css'
@@ -38,17 +39,12 @@ function App() {
 
   // Browser default: Save page (downloads the current page)
   // Basic hotkey with callback context
-  useHotkey(
-    'Mod+S',
-    (event, { hotkey, parsedHotkey }) => {
-      event.preventDefault()
-      setLastHotkey(hotkey)
-      setSaveCount((c) => c + 1)
-      console.log('Hotkey triggered:', hotkey)
-      console.log('Parsed hotkey:', parsedHotkey)
-    },
-    { preventDefault: true },
-  )
+  useHotkey('Mod+S', (_event, { hotkey, parsedHotkey }) => {
+    setLastHotkey(hotkey)
+    setSaveCount((c) => c + 1)
+    console.log('Hotkey triggered:', hotkey)
+    console.log('Parsed hotkey:', parsedHotkey)
+  })
 
   // requireReset prevents repeated triggering while holding keys
   useHotkey(
@@ -75,73 +71,30 @@ function App() {
   // ============================================================================
 
   // Browser default: Switch to tab 1
-  useHotkey(
-    'Mod+1',
-    () => {
-      setLastHotkey('Mod+1')
-      setActiveTab(1)
-    },
-    { preventDefault: true },
-  )
+  useHotkey('Mod+1', () => {
+    setLastHotkey('Mod+1')
+    setActiveTab(1)
+  })
 
-  // Browser default: Switch to tab 2
-  useHotkey(
-    'Mod+2',
-    () => {
-      setLastHotkey('Mod+2')
-      setActiveTab(2)
-    },
-    { preventDefault: true },
-  )
+  useHotkey('Mod+2', () => {
+    setLastHotkey('Mod+2')
+    setActiveTab(2)
+  })
 
-  // Browser default: Switch to tab 3
-  useHotkey(
-    'Mod+3',
-    () => {
-      setLastHotkey('Mod+3')
-      setActiveTab(3)
-    },
-    { preventDefault: true },
-  )
+  useHotkey('Mod+3', () => {
+    setLastHotkey('Mod+3')
+    setActiveTab(3)
+  })
 
-  // Browser default: Switch to tab 4
-  useHotkey(
-    'Mod+4',
-    () => {
-      setLastHotkey('Mod+4')
-      setActiveTab(4)
-    },
-    { preventDefault: true },
-  )
+  useHotkey('Mod+4', () => {
+    setLastHotkey('Mod+4')
+    setActiveTab(4)
+  })
 
-  // Browser default: Switch to tab 5
-  useHotkey(
-    'Mod+5',
-    () => {
-      setLastHotkey('Mod+5')
-      setActiveTab(5)
-    },
-    { preventDefault: true },
-  )
-
-  // Browser default: Reset zoom level to 100%
-  useHotkey(
-    'Control+0',
-    () => {
-      setLastHotkey('Control+0')
-      setActiveTab(0)
-    },
-    { preventDefault: true },
-  )
-
-  useHotkey(
-    'Alt+9',
-    () => {
-      setLastHotkey('Alt+9')
-      setActiveTab(9)
-    },
-    { preventDefault: true },
-  )
+  useHotkey('Mod+5', () => {
+    setLastHotkey('Mod+5')
+    setActiveTab(5)
+  })
 
   // ============================================================================
   // Navigation Key Combinations
@@ -157,90 +110,50 @@ function App() {
     setNavigationCount((c) => c + 1)
   })
 
-  // Browser default: Navigate back in history
-  useHotkey(
-    'Alt+ArrowLeft',
-    () => {
-      setLastHotkey('Alt+ArrowLeft')
-      setNavigationCount((c) => c + 1)
-    },
-    { preventDefault: true },
-  )
+  useHotkey('Alt+ArrowLeft', () => {
+    setLastHotkey('Alt+ArrowLeft')
+    setNavigationCount((c) => c + 1)
+  })
 
-  // Browser default: Navigate forward in history
-  useHotkey(
-    'Alt+ArrowRight',
-    () => {
-      setLastHotkey('Alt+ArrowRight')
-      setNavigationCount((c) => c + 1)
-    },
-    { preventDefault: true },
-  )
+  useHotkey('Alt+ArrowRight', () => {
+    setLastHotkey('Alt+ArrowRight')
+    setNavigationCount((c) => c + 1)
+  })
 
-  // Browser default: Scroll to top of page
-  useHotkey(
-    'Mod+Home',
-    () => {
-      setLastHotkey('Mod+Home')
-      setNavigationCount((c) => c + 1)
-    },
-    { preventDefault: true },
-  )
+  useHotkey('Mod+Home', () => {
+    setLastHotkey('Mod+Home')
+    setNavigationCount((c) => c + 1)
+  })
 
-  // Browser default: Scroll to bottom of page
-  useHotkey(
-    'Mod+End',
-    () => {
-      setLastHotkey('Mod+End')
-      setNavigationCount((c) => c + 1)
-    },
-    { preventDefault: true },
-  )
+  useHotkey('Mod+End', () => {
+    setLastHotkey('Mod+End')
+    setNavigationCount((c) => c + 1)
+  })
 
-  // Browser default: Switch to previous tab
-  useHotkey(
-    'Control+PageUp',
-    () => {
-      setLastHotkey('Control+PageUp')
-      setNavigationCount((c) => c + 1)
-    },
-    { preventDefault: true },
-  )
+  useHotkey('Control+PageUp', () => {
+    setLastHotkey('Control+PageUp')
+    setNavigationCount((c) => c + 1)
+  })
 
-  // Browser default: Switch to next tab
-  useHotkey(
-    'Control+PageDown',
-    () => {
-      setLastHotkey('Control+PageDown')
-      setNavigationCount((c) => c + 1)
-    },
-    { preventDefault: true },
-  )
+  useHotkey('Control+PageDown', () => {
+    setLastHotkey('Control+PageDown')
+    setNavigationCount((c) => c + 1)
+  })
 
   // ============================================================================
   // Function Key Combinations
   // ============================================================================
 
-  // Browser default: Close window (Windows/Linux) or close tab (macOS)
-  useHotkey(
-    'Meta+F4',
-    () => {
-      setLastHotkey('Alt+F4')
-      setFunctionKeyCount((c) => c + 1)
-      alert('Alt+F4 pressed (normally closes window)')
-    },
-    { preventDefault: true },
-  )
+  useHotkey('Meta+F4', () => {
+    setLastHotkey('Alt+F4')
+    setFunctionKeyCount((c) => c + 1)
+    alert('Alt+F4 pressed (normally closes window)')
+  })
 
-  // Browser default: Hard refresh (bypass cache)
-  useHotkey(
-    'Control+F5',
-    () => {
-      setLastHotkey('Control+F5')
-      setFunctionKeyCount((c) => c + 1)
-    },
-    { preventDefault: true },
-  )
+  useHotkey('Control+F5', () => {
+    setLastHotkey('Control+F5')
+    setFunctionKeyCount((c) => c + 1)
+  })
 
   useHotkey('Mod+F1', () => {
     setLastHotkey('Mod+F1')
@@ -261,39 +174,25 @@ function App() {
     setMultiModifierCount((c) => c + 1)
   })
 
-  // Browser default: Redo (in text editors and some browsers)
-  useHotkey(
-    'Mod+Shift+Z',
-    () => {
-      setLastHotkey('Mod+Shift+Z')
-      setMultiModifierCount((c) => c + 1)
-    },
-    { preventDefault: true },
-  )
+  useHotkey('Mod+Shift+Z', () => {
+    setLastHotkey('Mod+Shift+Z')
+    setMultiModifierCount((c) => c + 1)
+  })
 
   useHotkey('Control+Alt+A', () => {
     setLastHotkey('Control+Alt+A')
     setMultiModifierCount((c) => c + 1)
   })
 
-  // Browser default: Open new incognito/private window
-  useHotkey(
-    'Control+Shift+N',
-    () => {
-      setLastHotkey('Control+Shift+N')
-      setMultiModifierCount((c) => c + 1)
-    },
-    { preventDefault: true },
-  )
+  useHotkey('Control+Shift+N', () => {
+    setLastHotkey('Control+Shift+N')
+    setMultiModifierCount((c) => c + 1)
+  })
 
-  useHotkey(
-    'Mod+Alt+T',
-    () => {
-      setLastHotkey('Mod+Alt+T')
-      setMultiModifierCount((c) => c + 1)
-    },
-    { preventDefault: true },
-  )
+  useHotkey('Mod+Alt+T', () => {
+    setLastHotkey('Mod+Alt+T')
+    setMultiModifierCount((c) => c + 1)
+  })
 
   useHotkey('Control+Alt+Shift+X', () => {
     setLastHotkey('Control+Alt+Shift+X')
@@ -314,50 +213,30 @@ function App() {
     setEditingKeyCount((c) => c + 1)
   })
 
-  // Browser default: Navigate back in history (Windows/Linux)
-  useHotkey(
-    'Mod+Backspace',
-    () => {
-      setLastHotkey('Mod+Backspace')
-      setEditingKeyCount((c) => c + 1)
-    },
-    { preventDefault: true },
-  )
+  useHotkey('Mod+Backspace', () => {
+    setLastHotkey('Mod+Backspace')
+    setEditingKeyCount((c) => c + 1)
+  })
 
   useHotkey('Mod+Delete', () => {
     setLastHotkey('Mod+Delete')
     setEditingKeyCount((c) => c + 1)
   })
 
-  // Browser default: Switch to next tab
-  useHotkey(
-    'Control+Tab',
-    () => {
-      setLastHotkey('Control+Tab')
-      setEditingKeyCount((c) => c + 1)
-    },
-    { preventDefault: true },
-  )
+  useHotkey('Control+Tab', () => {
+    setLastHotkey('Control+Tab')
+    setEditingKeyCount((c) => c + 1)
+  })
 
-  // Browser default: Navigate backwards through form fields
-  useHotkey(
-    'Shift+Tab',
-    () => {
-      setLastHotkey('Shift+Tab')
-      setEditingKeyCount((c) => c + 1)
-    },
-    { preventDefault: true },
-  )
+  useHotkey('Shift+Tab', () => {
+    setLastHotkey('Shift+Tab')
+    setEditingKeyCount((c) => c + 1)
+  })
 
-  // Browser default: Focus address bar (Chrome/Edge) or search bar (Firefox)
-  useHotkey(
-    'Mod+Space',
-    () => {
-      setLastHotkey('Mod+Space')
-      setEditingKeyCount((c) => c + 1)
-    },
-    { preventDefault: true },
-  )
+  useHotkey('Mod+Space', () => {
+    setLastHotkey('Mod+Space')
+    setEditingKeyCount((c) => c + 1)
+  })
 
   // ============================================================================
   // Single Keys
@@ -375,15 +254,10 @@ function App() {
     setActiveTab(1)
   })
 
-  // Browser default: Open/close browser DevTools
-  useHotkey(
-    'F12',
-    () => {
-      setLastHotkey('F12')
-      setFunctionKeyCount((c) => c + 1)
-    },
-    { preventDefault: true },
-  )
+  useHotkey('F12', () => {
+    setLastHotkey('F12')
+    setFunctionKeyCount((c) => c + 1)
+  })
 
   // ============================================================================
   // Scoped Keyboard Shortcuts
@@ -462,10 +336,7 @@ function App() {
       setEditorShortcutCount((c) => c + 1)
       setEditorContent('')
     },
-    {
-      target: editorRefForHotkey,
-      stopPropagation: true, // prevent the event from bubbling up to the parent elements
-    },
+    { target: editorRefForHotkey },
   )
 
   return (
@@ -485,15 +356,10 @@ function App() {
             Press <kbd>{formatForDisplay('Mod+S')}</kbd> to trigger
           </p>
           <div className="counter">Save triggered: {saveCount}x</div>
-          <pre className="code-block">{`useHotkey(
-  'Mod+S',
-  (event, { hotkey, parsedHotkey }) => {
-    event.preventDefault()
-    console.log('Hotkey:', hotkey)
-    console.log('Parsed:', parsedHotkey)
-  },
-  { preventDefault: true }
-)`}</pre>
+          <pre className="code-block">{`useHotkey('Mod+S', (_event, { hotkey, parsedHotkey }) => {
+  console.log('Hotkey:', hotkey)
+  console.log('Parsed:', parsedHotkey)
+})`}</pre>
         </section>
 
         <section className="demo-section">
@@ -554,12 +420,6 @@ useHotkey(
             </div>
             <div>
               <kbd>{formatForDisplay('Mod+5')}</kbd> → Tab 5
-            </div>
-            <div>
-              <kbd>{formatForDisplay('Control+0')}</kbd> → Tab 0
-            </div>
-            <div>
-              <kbd>{formatForDisplay('Alt+9')}</kbd> → Tab 9
             </div>
           </div>
           <div className="counter">Active Tab: {activeTab}</div>
@@ -855,9 +715,20 @@ useHotkey(
         </section>
       </main>
 
-      <TanStackDevtools plugins={[keysDevtoolsPlugin()]} />
+      <TanStackDevtools plugins={[hotkeysDevtoolsPlugin()]} />
     </div>
   )
 }
 
-ReactDOM.createRoot(document.getElementById('root')!).render(<App />)
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  // optionally, provide default options to an optional HotkeysProvider
+  <HotkeysProvider
+  // defaultOptions={{
+  //   hotkey: {
+  //     preventDefault: false, // true by default
+  //   },
+  // }}
+  >
+    <App />
+  </HotkeysProvider>,
+)

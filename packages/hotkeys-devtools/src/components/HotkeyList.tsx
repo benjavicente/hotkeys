@@ -2,7 +2,7 @@ import { For, Show, createEffect, createMemo, createSignal, on } from 'solid-js'
 import clsx from 'clsx'
 import { formatForDisplay } from '@tanstack/hotkeys'
 import { useStyles } from '../styles/use-styles'
-import { useKeysDevtoolsState } from '../KeysContextProvider'
+import { useHotkeysDevtoolsState } from '../HotkeysContextProvider'
 import type { ConflictBehavior, HotkeyRegistration } from '@tanstack/hotkeys'
 
 type HotkeyListProps = {
@@ -80,7 +80,7 @@ function findScopeConflicts(
 
 export function HotkeyList(props: HotkeyListProps) {
   const styles = useStyles()
-  const state = useKeysDevtoolsState()
+  const state = useHotkeysDevtoolsState()
 
   const registrations = createMemo(() => state.registrations())
 

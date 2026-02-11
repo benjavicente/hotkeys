@@ -450,14 +450,11 @@ describe('HotkeyManager', () => {
   })
 
   describe('preventDefault and stopPropagation', () => {
-    it('should call preventDefault when option is set', () => {
+    it('should call preventDefault by default', () => {
       const manager = HotkeyManager.getInstance()
       const callback = vi.fn()
 
-      manager.register('Mod+S', callback, {
-        platform: 'mac',
-        preventDefault: true,
-      })
+      manager.register('Mod+S', callback, { platform: 'mac' })
 
       const event = createKeyboardEvent('keydown', 's', { metaKey: true })
       const preventDefaultSpy = vi.spyOn(event, 'preventDefault')
@@ -467,14 +464,28 @@ describe('HotkeyManager', () => {
       expect(preventDefaultSpy).toHaveBeenCalled()
     })
 
-    it('should call stopPropagation when option is set', () => {
+    it('should NOT call preventDefault when explicitly set to false', () => {
       const manager = HotkeyManager.getInstance()
       const callback = vi.fn()
 
       manager.register('Mod+S', callback, {
         platform: 'mac',
-        stopPropagation: true,
+        preventDefault: false,
       })
+
+      const event = createKeyboardEvent('keydown', 's', { metaKey: true })
+      const preventDefaultSpy = vi.spyOn(event, 'preventDefault')
+
+      document.dispatchEvent(event)
+
+      expect(preventDefaultSpy).not.toHaveBeenCalled()
+    })
+
+    it('should call stopPropagation by default', () => {
+      const manager = HotkeyManager.getInstance()
+      const callback = vi.fn()
+
+      manager.register('Mod+S', callback, { platform: 'mac' })
 
       const event = createKeyboardEvent('keydown', 's', { metaKey: true })
       const stopPropagationSpy = vi.spyOn(event, 'stopPropagation')
@@ -482,6 +493,23 @@ describe('HotkeyManager', () => {
       document.dispatchEvent(event)
 
       expect(stopPropagationSpy).toHaveBeenCalled()
+    })
+
+    it('should NOT call stopPropagation when explicitly set to false', () => {
+      const manager = HotkeyManager.getInstance()
+      const callback = vi.fn()
+
+      manager.register('Mod+S', callback, {
+        platform: 'mac',
+        stopPropagation: false,
+      })
+
+      const event = createKeyboardEvent('keydown', 's', { metaKey: true })
+      const stopPropagationSpy = vi.spyOn(event, 'stopPropagation')
+
+      document.dispatchEvent(event)
+
+      expect(stopPropagationSpy).not.toHaveBeenCalled()
     })
   })
 

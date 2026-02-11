@@ -18,8 +18,8 @@
           "to": "installation"
         },
         {
-          "label": "Quick Start",
-          "to": "quick-start"
+          "label": "Devtools",
+          "to": "devtools"
         }
       ],
       "frameworks": [
@@ -27,17 +27,39 @@
           "label": "react",
           "children": [
             {
-              "label": "React Adapter",
-              "to": "framework/react/adapter"
+              "label": "Quick Start",
+              "to": "framework/react/quick-start"
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "label": "Guides",
+      "children": [],
+      "frameworks": [
         {
-          "label": "solid",
+          "label": "react",
           "children": [
             {
-              "label": "Solid Adapter",
-              "to": "framework/solid/adapter"
+              "label": "Hotkeys",
+              "to": "framework/react/guides/hotkeys"
+            },
+            {
+              "label": "Sequences",
+              "to": "framework/react/guides/sequences"
+            },
+            {
+              "label": "Hotkey Recording",
+              "to": "framework/react/guides/hotkey-recording"
+            },
+            {
+              "label": "Key State Tracking",
+              "to": "framework/react/guides/key-state-tracking"
+            },
+            {
+              "label": "Formatting & Display",
+              "to": "framework/react/guides/formatting-display"
             }
           ]
         }
@@ -48,7 +70,251 @@
       "children": [
         {
           "label": "Core API",
-          "to": "reference"
+          "to": "reference/index"
+        }
+      ],
+      "frameworks": [
+        {
+          "label": "react",
+          "children": [
+            {
+              "label": "React Hooks",
+              "to": "framework/react/reference/index"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "collapsible": true,
+      "defaultCollapsed": true,
+      "label": "Hotkeys API Reference",
+      "children": [
+        {
+          "label": "HotkeyManager",
+          "to": "reference/classes/HotkeyManager"
+        },
+        {
+          "label": "getHotkeyManager",
+          "to": "reference/functions/getHotkeyManager"
+        },
+        {
+          "label": "HotkeyOptions",
+          "to": "reference/interfaces/HotkeyOptions"
+        },
+        {
+          "label": "HotkeyRegistration",
+          "to": "reference/interfaces/HotkeyRegistration"
+        },
+        {
+          "label": "HotkeyRegistrationHandle",
+          "to": "reference/interfaces/HotkeyRegistrationHandle"
+        },
+        {
+          "label": "HotkeyCallback",
+          "to": "reference/type-aliases/HotkeyCallback"
+        },
+        {
+          "label": "HotkeyCallbackContext",
+          "to": "reference/interfaces/HotkeyCallbackContext"
+        },
+        {
+          "label": "ConflictBehavior",
+          "to": "reference/type-aliases/ConflictBehavior"
+        }
+      ],
+      "frameworks": [
+        {
+          "label": "react",
+          "children": [
+            {
+              "label": "useHotkey",
+              "to": "framework/react/reference/functions/useHotkey"
+            },
+            {
+              "label": "UseHotkeyOptions",
+              "to": "framework/react/reference/interfaces/UseHotkeyOptions"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "collapsible": true,
+      "defaultCollapsed": true,
+      "label": "Hotkey Sequence API Reference",
+      "children": [
+        {
+          "label": "SequenceManager",
+          "to": "reference/classes/SequenceManager"
+        },
+        {
+          "label": "getSequenceManager",
+          "to": "reference/functions/getSequenceManager"
+        },
+        {
+          "label": "SequenceOptions",
+          "to": "reference/interfaces/SequenceOptions"
+        },
+        {
+          "label": "createSequenceMatcher",
+          "to": "reference/functions/createSequenceMatcher"
+        },
+        {
+          "label": "HotkeySequence",
+          "to": "reference/type-aliases/HotkeySequence"
+        }
+      ],
+      "frameworks": [
+        {
+          "label": "react",
+          "children": [
+            {
+              "label": "useHotkeySequence",
+              "to": "framework/react/reference/functions/useHotkeySequence"
+            },
+            {
+              "label": "UseHotkeySequenceOptions",
+              "to": "framework/react/reference/interfaces/UseHotkeySequenceOptions"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "collapsible": true,
+      "defaultCollapsed": true,
+      "label": "Key Hold API Reference",
+      "children": [
+        {
+          "label": "KeyStateTracker",
+          "to": "reference/classes/KeyStateTracker"
+        },
+        {
+          "label": "getKeyStateTracker",
+          "to": "reference/functions/getKeyStateTracker"
+        },
+        {
+          "label": "KeyStateTrackerState",
+          "to": "reference/interfaces/KeyStateTrackerState"
+        },
+        {
+          "label": "HeldKey",
+          "to": "reference/type-aliases/HeldKey"
+        }
+      ],
+      "frameworks": [
+        {
+          "label": "react",
+          "children": [
+            {
+              "label": "useKeyHold",
+              "to": "framework/react/reference/functions/useKeyHold"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "collapsible": true,
+      "defaultCollapsed": true,
+      "label": "Held Keys API Reference",
+      "children": [
+        {
+          "label": "KeyStateTracker",
+          "to": "reference/classes/KeyStateTracker"
+        },
+        {
+          "label": "getKeyStateTracker",
+          "to": "reference/functions/getKeyStateTracker"
+        },
+        {
+          "label": "KeyStateTrackerState",
+          "to": "reference/interfaces/KeyStateTrackerState"
+        },
+        {
+          "label": "HeldKey",
+          "to": "reference/type-aliases/HeldKey"
+        }
+      ],
+      "frameworks": [
+        {
+          "label": "react",
+          "children": [
+            {
+              "label": "useHeldKeys",
+              "to": "framework/react/reference/functions/useHeldKeys"
+            },
+            {
+              "label": "useHeldKeyCodes",
+              "to": "framework/react/reference/functions/useHeldKeyCodes"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "collapsible": true,
+      "defaultCollapsed": true,
+      "label": "Hotkey Recorder API Reference",
+      "children": [
+        {
+          "label": "HotkeyRecorder",
+          "to": "reference/classes/HotkeyRecorder"
+        },
+        {
+          "label": "HotkeyRecorderOptions",
+          "to": "reference/interfaces/HotkeyRecorderOptions"
+        },
+        {
+          "label": "HotkeyRecorderState",
+          "to": "reference/interfaces/HotkeyRecorderState"
+        }
+      ],
+      "frameworks": [
+        {
+          "label": "react",
+          "children": [
+            {
+              "label": "useHotkeyRecorder",
+              "to": "framework/react/reference/functions/useHotkeyRecorder"
+            },
+            {
+              "label": "ReactHotkeyRecorder",
+              "to": "framework/react/reference/interfaces/ReactHotkeyRecorder"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Examples",
+      "children": [],
+      "frameworks": [
+        {
+          "label": "react",
+          "children": [
+            {
+              "label": "useHotkey",
+              "to": "framework/react/examples/useHotkey"
+            },
+            {
+              "label": "useHotkeySequence",
+              "to": "framework/react/examples/useHotkeySequence"
+            },
+            {
+              "label": "useHotkeyRecorder",
+              "to": "framework/react/examples/useHotkeyRecorder"
+            },
+            {
+              "label": "useHeldKeys",
+              "to": "framework/react/examples/useHeldKeys"
+            },
+            {
+              "label": "useKeyHold",
+              "to": "framework/react/examples/useKeyhold"
+            }
+          ]
         }
       ]
     }

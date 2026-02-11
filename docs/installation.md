@@ -1,45 +1,42 @@
-# Installation
+---
+title: Installation
+id: installation
+---
 
-## Core Package
+TanStack Hotkeys is compatible with various front-end frameworks. Install the corresponding adapter for your framework using your preferred package manager:
 
-```bash
-npm install @tanstack/hotkeys
-# or
-pnpm add @tanstack/hotkeys
-# or
-yarn add @tanstack/hotkeys
-```
+<!-- ::start:tabs variant="package-managers" -->
 
-## React
+react: @tanstack/react-hotkeys
 
-```bash
-npm install @tanstack/react-hotkeys
-# or
-pnpm add @tanstack/react-hotkeys
-# or
-yarn add @tanstack/react-hotkeys
-```
+<!-- ::end:tabs -->
 
-## Solid
+Each framework package re-exports everything from the core `@tanstack/hotkeys` package, so there is no need to install the core package separately.
 
-```bash
-npm install @tanstack/solid-hotkeys
-# or
-pnpm add @tanstack/solid-hotkeys
-# or
-yarn add @tanstack/solid-hotkeys
-```
+> [!NOTE]
+> If you are not using a framework, you can install the core `@tanstack/hotkeys` package directly for use with vanilla JavaScript.
+
+<!-- ::start:framework -->
+
+# React
 
 ## Devtools
 
-### React Devtools
+Developer tools are available using [TanStack Devtools](https://tanstack.com/devtools/latest). Install the devtools adapter and the Hotkeys devtools plugin as dev dependencies to inspect registered hotkeys and monitor key state.
 
-```bash
-npm install @tanstack/react-hotkeys-devtools
-```
+<!-- ::end:framework -->
 
-### Solid Devtools
+<!-- ::start:tabs variant="package-manager" -->
 
-```bash
-npm install @tanstack/solid-hotkeys-devtools
-```
+react: @tanstack/react-devtools
+react: @tanstack/react-hotkeys-devtools
+
+<!-- ::end:tabs -->
+
+<!-- ::start:framework -->
+
+# React
+
+See the [devtools](./devtools) documentation for more information on how to set up and use the Hotkeys devtools.
+
+<!-- ::end:framework -->

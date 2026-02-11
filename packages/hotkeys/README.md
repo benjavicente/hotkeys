@@ -109,7 +109,7 @@ function Editor() {
     (e, { hotkey }) => {
       save()
     },
-    { preventDefault: true, requireReset: true },
+    { requireReset: true },
   )
 
   return (

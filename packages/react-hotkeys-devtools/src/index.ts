@@ -1,16 +1,16 @@
 'use client'
 
-import * as Devtools from './ReactKeysDevtools'
+import * as Devtools from './ReactHotkeysDevtools'
 import * as plugin from './plugin'
 
-export const KeysDevtoolsPanel =
+export const HotkeysDevtoolsPanel =
   process.env.NODE_ENV !== 'development'
-    ? Devtools.KeysDevtoolsPanelNoOp
-    : Devtools.KeysDevtoolsPanel
+    ? Devtools.HotkeysDevtoolsPanelNoOp
+    : Devtools.HotkeysDevtoolsPanel
 
-export const keysDevtoolsPlugin =
+export const hotkeysDevtoolsPlugin =
   process.env.NODE_ENV !== 'development'
-    ? plugin.keysDevtoolsNoOpPlugin
-    : plugin.keysDevtoolsPlugin
+    ? plugin.hotkeysDevtoolsNoOpPlugin
+    : plugin.hotkeysDevtoolsPlugin
 
-export type { KeysDevtoolsReactInit } from './ReactKeysDevtools'
+export type { HotkeysDevtoolsReactInit } from './ReactHotkeysDevtools'

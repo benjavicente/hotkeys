@@ -93,9 +93,9 @@ export function matchesKeyboardEvent(
  * Options for creating a hotkey handler.
  */
 export interface CreateHotkeyHandlerOptions {
-  /** Prevent the default browser action when the hotkey matches */
+  /** Prevent the default browser action when the hotkey matches. Defaults to true */
   preventDefault?: boolean
-  /** Stop event propagation when the hotkey matches */
+  /** Stop event propagation when the hotkey matches. Defaults to true */
   stopPropagation?: boolean
   /** The target platform for resolving 'Mod' */
   platform?: 'mac' | 'windows' | 'linux'
@@ -114,7 +114,7 @@ export interface CreateHotkeyHandlerOptions {
  * const handler = createHotkeyHandler('Mod+S', (event, { hotkey, parsedHotkey }) => {
  *   console.log(`${hotkey} was pressed`)
  *   handleSave()
- * }, { preventDefault: true })
+ * })
  *
  * document.addEventListener('keydown', handler)
  * ```
@@ -124,7 +124,7 @@ export function createHotkeyHandler(
   callback: HotkeyCallback,
   options: CreateHotkeyHandlerOptions = {},
 ): (event: KeyboardEvent) => void {
-  const { preventDefault = false, stopPropagation = false, platform } = options
+  const { preventDefault = true, stopPropagation = true, platform } = options
   const resolvedPlatform = platform ?? detectPlatform()
 
   const hotkeyString: Hotkey =
@@ -174,7 +174,7 @@ export function createMultiHotkeyHandler(
   handlers: MultiHotkeyHandler,
   options: CreateHotkeyHandlerOptions = {},
 ): (event: KeyboardEvent) => void {
-  const { preventDefault = false, stopPropagation = false, platform } = options
+  const { preventDefault = true, stopPropagation = true, platform } = options
   const resolvedPlatform = platform ?? detectPlatform()
 
   // Pre-parse all hotkeys for efficiency

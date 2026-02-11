@@ -9,19 +9,19 @@ import { HotkeyManager, KeyStateTracker } from '@tanstack/hotkeys'
 import type { Accessor } from 'solid-js'
 import type { HotkeyRegistration } from '@tanstack/hotkeys'
 
-interface KeysDevtoolsContextType {
+interface HotkeysDevtoolsContextType {
   registrations: Accessor<Array<HotkeyRegistration>>
   heldKeys: Accessor<Array<string>>
   heldCodes: Accessor<Record<string, string>>
 }
 
-const KeysDevtoolsContext = createContext<KeysDevtoolsContextType>({
+const HotkeysDevtoolsContext = createContext<HotkeysDevtoolsContextType>({
   registrations: () => [],
   heldKeys: () => [],
   heldCodes: () => ({}),
 })
 
-export function KeysContextProvider(props: { children: any }) {
+export function HotkeysContextProvider(props: { children: any }) {
   const manager = HotkeyManager.getInstance()
   const tracker = KeyStateTracker.getInstance()
 
@@ -54,14 +54,14 @@ export function KeysContextProvider(props: { children: any }) {
   })
 
   return (
-    <KeysDevtoolsContext.Provider
+    <HotkeysDevtoolsContext.Provider
       value={{ registrations, heldKeys, heldCodes }}
     >
       {props.children}
-    </KeysDevtoolsContext.Provider>
+    </HotkeysDevtoolsContext.Provider>
   )
 }
 
-export function useKeysDevtoolsState() {
-  return useContext(KeysDevtoolsContext)
+export function useHotkeysDevtoolsState() {
+  return useContext(HotkeysDevtoolsContext)
 }

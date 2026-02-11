@@ -1,7 +1,7 @@
 import { For, Show, createMemo } from 'solid-js'
 import { formatForDisplay } from '@tanstack/hotkeys'
 import { useStyles } from '../styles/use-styles'
-import { useKeysDevtoolsState } from '../KeysContextProvider'
+import { useHotkeysDevtoolsState } from '../HotkeysContextProvider'
 import { ActionButtons } from './ActionButtons'
 import type { ConflictBehavior, HotkeyRegistration } from '@tanstack/hotkeys'
 
@@ -80,7 +80,7 @@ function getConflictLabel(
 
 export function DetailsPanel(props: DetailsPanelProps) {
   const styles = useStyles()
-  const state = useKeysDevtoolsState()
+  const state = useHotkeysDevtoolsState()
 
   return (
     <div class={styles().stateDetails}>
