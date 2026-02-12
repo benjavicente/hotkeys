@@ -389,9 +389,24 @@ describe('createHotkeyHandler', () => {
     expect(event.stopPropagation).toHaveBeenCalled()
   })
 
-  it('should not preventDefault or stopPropagation by default', () => {
+  it('should preventDefault and stopPropagation by default', () => {
     const callback = vi.fn()
     const handler = createHotkeyHandler('Mod+S', callback, { platform: 'mac' })
+
+    const event = createKeyboardEvent('s', { metaKey: true })
+    handler(event)
+
+    expect(event.preventDefault).toHaveBeenCalled()
+    expect(event.stopPropagation).toHaveBeenCalled()
+  })
+
+  it('should not preventDefault or stopPropagation when explicitly set to false', () => {
+    const callback = vi.fn()
+    const handler = createHotkeyHandler('Mod+S', callback, {
+      platform: 'mac',
+      preventDefault: false,
+      stopPropagation: false,
+    })
 
     const event = createKeyboardEvent('s', { metaKey: true })
     handler(event)
@@ -478,7 +493,7 @@ describe('createMultiHotkeyHandler', () => {
       {
         'Mod+S': vi.fn(),
       },
-      { platform: 'mac', preventDefault: true },
+      { platform: 'mac' },
     )
 
     const event = createKeyboardEvent('s', { metaKey: true })

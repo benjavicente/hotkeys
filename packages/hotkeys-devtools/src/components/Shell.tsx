@@ -1,14 +1,14 @@
 import { createMemo, createSignal, onCleanup, onMount } from 'solid-js'
 import { Header, HeaderLogo, MainPanel } from '@tanstack/devtools-ui'
 import { useStyles } from '../styles/use-styles'
-import { useKeysDevtoolsState } from '../KeysContextProvider'
+import { useHotkeysDevtoolsState } from '../HotkeysContextProvider'
 import { HeldKeysBar } from './HeldKeysTopbar'
 import { HotkeyList } from './HotkeyList'
 import { DetailsPanel } from './DetailsPanel'
 
 export function Shell() {
   const styles = useStyles()
-  const state = useKeysDevtoolsState()
+  const state = useHotkeysDevtoolsState()
   const [selectedId, setSelectedId] = createSignal<string | null>(null)
   const [leftPanelWidth, setLeftPanelWidth] = createSignal(300)
   const [isDragging, setIsDragging] = createSignal(false)
@@ -60,7 +60,12 @@ export function Shell() {
   return (
     <MainPanel>
       <Header>
-        <HeaderLogo flavor={{ light: '#f59e0b', dark: '#f59e0b' }}>
+        <HeaderLogo
+          flavor={{
+            light: 'oklch(51.4% 0.222 16.935)',
+            dark: 'oklch(58.6% 0.253 17.585)',
+          }}
+        >
           TanStack Hotkeys
         </HeaderLogo>
       </Header>

@@ -1,9 +1,9 @@
 import { createReactPlugin } from '@tanstack/devtools-utils/react'
-import { KeysDevtoolsPanel } from './ReactKeysDevtools'
+import { HotkeysDevtoolsPanel } from './ReactHotkeysDevtools'
 
-const [keysDevtoolsPlugin, keysDevtoolsNoOpPlugin] = createReactPlugin({
+const [hotkeysDevtoolsPlugin, hotkeysDevtoolsNoOpPlugin] = createReactPlugin({
   name: 'TanStack Hotkeys',
-  Component: KeysDevtoolsPanel,
+  Component: HotkeysDevtoolsPanel,
 })
 
-export { keysDevtoolsPlugin, keysDevtoolsNoOpPlugin }
+export { hotkeysDevtoolsPlugin, hotkeysDevtoolsNoOpPlugin }

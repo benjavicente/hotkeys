@@ -31,7 +31,7 @@ optional preventDefault: boolean;
 
 Defined in: [match.ts:97](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/match.ts#L97)
 
-Prevent the default browser action when the hotkey matches
+Prevent the default browser action when the hotkey matches. Defaults to true
 
 ***
 
@@ -43,4 +43,4 @@ optional stopPropagation: boolean;
 
 Defined in: [match.ts:99](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/match.ts#L99)
 
-Stop event propagation when the hotkey matches
+Stop event propagation when the hotkey matches. Defaults to true

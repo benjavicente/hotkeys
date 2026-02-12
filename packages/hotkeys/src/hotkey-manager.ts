@@ -1,12 +1,14 @@
 import { Store } from '@tanstack/store'
 import { detectPlatform, normalizeKeyName } from './constants'
-import { parseHotkey } from './parse'
+import { formatHotkey } from './format'
+import { parseHotkey, rawHotkeyToParsedHotkey } from './parse'
 import { matchesKeyboardEvent } from './match'
 import type {
   Hotkey,
   HotkeyCallback,
   HotkeyCallbackContext,
   ParsedHotkey,
+  RegisterableHotkey,
 } from './hotkey'
 
 /**
@@ -23,6 +25,8 @@ export type ConflictBehavior = 'warn' | 'error' | 'replace' | 'allow'
  * Options for registering a hotkey.
  */
 export interface HotkeyOptions {
+  /** Behavior when this hotkey conflicts with an existing registration on the same target. Defaults to 'warn' */
+  conflictBehavior?: ConflictBehavior
   /** Whether the hotkey is enabled. Defaults to true */
   enabled?: boolean
   /** The event type to listen for. Defaults to 'keydown' */
@@ -31,38 +35,36 @@ export interface HotkeyOptions {
   ignoreInputs?: boolean
   /** The target platform for resolving 'Mod' */
   platform?: 'mac' | 'windows' | 'linux'
-  /** Prevent the default browser action when the hotkey matches */
+  /** Prevent the default browser action when the hotkey matches. Defaults to true */
   preventDefault?: boolean
   /** If true, only trigger once until all keys are released. Default: false */
   requireReset?: boolean
-  /** Stop event propagation when the hotkey matches */
+  /** Stop event propagation when the hotkey matches. Defaults to true */
   stopPropagation?: boolean
   /** The DOM element to attach the event listener to. Defaults to document. */
   target?: HTMLElement | Document | Window | null
-  /** Behavior when this hotkey conflicts with an existing registration on the same target. Defaults to 'warn' */
-  conflictBehavior?: ConflictBehavior
 }
 
 /**
  * A registered hotkey handler in the HotkeyManager.
  */
 export interface HotkeyRegistration {
-  /** Unique identifier for this registration */
-  id: string
-  /** The original hotkey string */
-  hotkey: Hotkey
-  /** The parsed hotkey */
-  parsedHotkey: ParsedHotkey
   /** The callback to invoke */
   callback: HotkeyCallback
-  /** Options for this registration */
-  options: HotkeyOptions
   /** Whether this registration has fired and needs reset (for requireReset) */
   hasFired: boolean
-  /** How many times this registration's callback has been triggered */
-  triggerCount: number
+  /** The original hotkey string */
+  hotkey: Hotkey
+  /** Unique identifier for this registration */
+  id: string
+  /** Options for this registration */
+  options: HotkeyOptions
+  /** The parsed hotkey */
+  parsedHotkey: ParsedHotkey
   /** The resolved target element for this registration */
   target: HTMLElement | Document | Window
+  /** How many times this registration's callback has been triggered */
+  triggerCount: number
 }
 
 /**
@@ -92,26 +94,22 @@ export interface HotkeyRegistration {
  * ```
  */
 export interface HotkeyRegistrationHandle {
-  /** Unique identifier for this registration */
-  readonly id: string
-
-  /** Unregister this hotkey */
-  unregister: () => void
-
   /**
    * The callback function. Can be set directly to update without re-registering.
    * This avoids stale closures when the callback references React state.
    */
   callback: HotkeyCallback
-
+  /** Unique identifier for this registration */
+  readonly id: string
+  /** Check if this registration is still active (not unregistered) */
+  readonly isActive: boolean
   /**
    * Update options (merged with existing options).
    * Useful for updating `enabled`, `preventDefault`, etc. without re-registering.
    */
   setOptions: (options: Partial<HotkeyOptions>) => void
-
-  /** Check if this registration is still active (not unregistered) */
-  readonly isActive: boolean
+  /** Unregister this hotkey */
+  unregister: () => void
 }
 
 /**
@@ -121,8 +119,8 @@ const defaultHotkeyOptions: Omit<
   Required<HotkeyOptions>,
   'platform' | 'target'
 > = {
-  preventDefault: false,
-  stopPropagation: false,
+  preventDefault: true,
+  stopPropagation: true,
   eventType: 'keydown',
   requireReset: false,
   enabled: true,
@@ -152,7 +150,7 @@ function generateId(): string {
  *
  * const unregister = manager.register('Mod+S', (event, context) => {
  *   console.log('Save triggered!')
- * }, { preventDefault: true })
+ * })
  *
  * // Later, to unregister:
  * unregister()
@@ -224,14 +222,14 @@ export class HotkeyManager {
    * The returned handle allows updating the callback and options without
    * re-registering, which is useful for avoiding stale closures in React.
    *
-   * @param hotkey - The hotkey string to listen for
+   * @param hotkey - The hotkey string (e.g., 'Mod+S') or RawHotkey object
    * @param callback - The function to call when the hotkey is pressed
    * @param options - Options for the hotkey behavior
    * @returns A handle for managing the registration
    *
    * @example
    * ```ts
-   * const handle = manager.register('Mod+S', callback, { preventDefault: true })
+   * const handle = manager.register('Mod+S', callback)
    *
    * // Update callback without re-registering (avoids stale closures)
    * handle.callback = newCallback
@@ -244,13 +242,19 @@ export class HotkeyManager {
    * ```
    */
   register(
-    hotkey: Hotkey,
+    hotkey: RegisterableHotkey,
     callback: HotkeyCallback,
     options: HotkeyOptions = {},
   ): HotkeyRegistrationHandle {
     const id = generateId()
     const platform = options.platform ?? this.#platform
-    const parsedHotkey = parseHotkey(hotkey, platform)
+    const parsedHotkey =
+      typeof hotkey === 'string'
+        ? parseHotkey(hotkey, platform)
+        : rawHotkeyToParsedHotkey(hotkey, platform)
+    const hotkeyStr = (
+      typeof hotkey === 'string' ? hotkey : formatHotkey(parsedHotkey)
+    ) as Hotkey
 
     // Resolve target: default to document if not provided or null
     const target =
@@ -262,17 +266,17 @@ export class HotkeyManager {
 
     // Check for existing registrations with the same hotkey and target
     const conflictingRegistration = this.#findConflictingRegistration(
-      hotkey,
+      hotkeyStr,
       target,
     )
 
     if (conflictingRegistration) {
-      this.#handleConflict(conflictingRegistration, hotkey, conflictBehavior)
+      this.#handleConflict(conflictingRegistration, hotkeyStr, conflictBehavior)
     }
 
     const registration: HotkeyRegistration = {
       id,
-      hotkey,
+      hotkey: hotkeyStr,
       parsedHotkey,
       callback,
       options: {

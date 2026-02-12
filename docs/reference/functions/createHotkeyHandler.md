@@ -60,7 +60,7 @@ A function that can be used as an event handler
 const handler = createHotkeyHandler('Mod+S', (event, { hotkey, parsedHotkey }) => {
   console.log(`${hotkey} was pressed`)
   handleSave()
-}, { preventDefault: true })
+})
 
 document.addEventListener('keydown', handler)
 ```

@@ -1,7 +1,7 @@
 'use client'
 
-export { KeysDevtoolsPanel } from './ReactKeysDevtools'
+export { HotkeysDevtoolsPanel } from './ReactHotkeysDevtools'
 
-export type { KeysDevtoolsReactInit } from './ReactKeysDevtools'
+export type { HotkeysDevtoolsReactInit } from './ReactHotkeysDevtools'
 
-export { keysDevtoolsPlugin } from './plugin'
+export { hotkeysDevtoolsPlugin } from './plugin'

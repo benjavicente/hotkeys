@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { getSequenceManager } from '@tanstack/hotkeys'
+import { useDefaultHotkeysOptions } from './HotkeysProvider'
 import type {
   HotkeyCallback,
   HotkeySequence,
@@ -51,7 +52,12 @@ export function useHotkeySequence(
   callback: HotkeyCallback,
   options: UseHotkeySequenceOptions = {},
 ): void {
-  const { enabled = true, ...sequenceOptions } = options
+  const mergedOptions = {
+    ...useDefaultHotkeysOptions().hotkeySequence,
+    ...options,
+  } as UseHotkeySequenceOptions
+
+  const { enabled = true, ...sequenceOptions } = mergedOptions
 
   // Extract options for stable dependencies
   const { timeout, platform } = sequenceOptions

@@ -1,5 +1,5 @@
 'use client'
 
-export { KeysDevtoolsCore } from './core'
+export { HotkeysDevtoolsCore } from './core'
 
-export type { KeysDevtoolsInit } from './core'
+export type { HotkeysDevtoolsInit } from './core'

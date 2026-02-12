@@ -81,6 +81,49 @@ describe('HotkeyManager', () => {
 
       expect(manager.getRegistrationCount()).toBe(2)
     })
+
+    it('should register with RawHotkey object', () => {
+      const manager = HotkeyManager.getInstance()
+      const callback = vi.fn()
+
+      manager.register({ key: 'S', ctrl: true, shift: true }, callback, {
+        platform: 'windows',
+      })
+
+      expect(manager.getRegistrationCount()).toBe(1)
+      expect(manager.isRegistered('Control+Shift+S')).toBe(true)
+
+      // Trigger the hotkey
+      document.dispatchEvent(
+        createKeyboardEvent('keydown', 's', { ctrlKey: true, shiftKey: true }),
+      )
+      expect(callback).toHaveBeenCalledTimes(1)
+    })
+
+    it('should register with minimal RawHotkey (key only)', () => {
+      const manager = HotkeyManager.getInstance()
+      const callback = vi.fn()
+
+      manager.register({ key: 'Escape' }, callback)
+
+      expect(manager.getRegistrationCount()).toBe(1)
+      document.dispatchEvent(createKeyboardEvent('keydown', 'Escape'))
+      expect(callback).toHaveBeenCalledTimes(1)
+    })
+
+    it('should register with RawHotkey mod (platform-adaptive)', () => {
+      const manager = HotkeyManager.getInstance()
+      const callback = vi.fn()
+
+      manager.register({ key: 'S', mod: true }, callback, { platform: 'mac' })
+
+      expect(manager.getRegistrationCount()).toBe(1)
+      expect(manager.isRegistered('Meta+S')).toBe(true)
+      document.dispatchEvent(
+        createKeyboardEvent('keydown', 's', { metaKey: true }),
+      )
+      expect(callback).toHaveBeenCalledTimes(1)
+    })
   })
 
   describe('HotkeyRegistrationHandle', () => {
@@ -450,14 +493,11 @@ describe('HotkeyManager', () => {
   })
 
   describe('preventDefault and stopPropagation', () => {
-    it('should call preventDefault when option is set', () => {
+    it('should call preventDefault by default', () => {
       const manager = HotkeyManager.getInstance()
       const callback = vi.fn()
 
-      manager.register('Mod+S', callback, {
-        platform: 'mac',
-        preventDefault: true,
-      })
+      manager.register('Mod+S', callback, { platform: 'mac' })
 
       const event = createKeyboardEvent('keydown', 's', { metaKey: true })
       const preventDefaultSpy = vi.spyOn(event, 'preventDefault')
@@ -467,14 +507,28 @@ describe('HotkeyManager', () => {
       expect(preventDefaultSpy).toHaveBeenCalled()
     })
 
-    it('should call stopPropagation when option is set', () => {
+    it('should NOT call preventDefault when explicitly set to false', () => {
       const manager = HotkeyManager.getInstance()
       const callback = vi.fn()
 
       manager.register('Mod+S', callback, {
         platform: 'mac',
-        stopPropagation: true,
+        preventDefault: false,
       })
+
+      const event = createKeyboardEvent('keydown', 's', { metaKey: true })
+      const preventDefaultSpy = vi.spyOn(event, 'preventDefault')
+
+      document.dispatchEvent(event)
+
+      expect(preventDefaultSpy).not.toHaveBeenCalled()
+    })
+
+    it('should call stopPropagation by default', () => {
+      const manager = HotkeyManager.getInstance()
+      const callback = vi.fn()
+
+      manager.register('Mod+S', callback, { platform: 'mac' })
 
       const event = createKeyboardEvent('keydown', 's', { metaKey: true })
       const stopPropagationSpy = vi.spyOn(event, 'stopPropagation')
@@ -482,6 +536,23 @@ describe('HotkeyManager', () => {
       document.dispatchEvent(event)
 
       expect(stopPropagationSpy).toHaveBeenCalled()
+    })
+
+    it('should NOT call stopPropagation when explicitly set to false', () => {
+      const manager = HotkeyManager.getInstance()
+      const callback = vi.fn()
+
+      manager.register('Mod+S', callback, {
+        platform: 'mac',
+        stopPropagation: false,
+      })
+
+      const event = createKeyboardEvent('keydown', 's', { metaKey: true })
+      const stopPropagationSpy = vi.spyOn(event, 'stopPropagation')
+
+      document.dispatchEvent(event)
+
+      expect(stopPropagationSpy).not.toHaveBeenCalled()
     })
   })
 
