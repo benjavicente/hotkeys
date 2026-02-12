@@ -21,7 +21,7 @@ The callback receives both the keyboard event and a context object
 containing the hotkey string and parsed hotkey.
 
 This hook syncs the callback and options on every render to avoid
-stale closures, similar to TanStack Pacer's pattern. This means
+stale closures. This means
 callbacks that reference React state will always have access to
 the latest values.
 

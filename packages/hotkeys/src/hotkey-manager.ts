@@ -71,9 +71,6 @@ export interface HotkeyRegistration {
  * A handle returned from HotkeyManager.register() that allows updating
  * the callback and options without re-registering the hotkey.
  *
- * This pattern is similar to TanStack Pacer's Debouncer, where the function
- * and options can be synced on every render to avoid stale closures.
- *
  * @example
  * ```ts
  * const handle = manager.register('Mod+S', callback, options)

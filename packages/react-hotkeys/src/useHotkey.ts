@@ -21,11 +21,11 @@ export interface UseHotkeyOptions extends Omit<HotkeyOptions, 'target'> {
    * Defaults to document.
    */
   target?:
-    | React.RefObject<HTMLElement | null>
-    | HTMLElement
-    | Document
-    | Window
-    | null
+  | React.RefObject<HTMLElement | null>
+  | HTMLElement
+  | Document
+  | Window
+  | null
 }
 
 /**
@@ -36,7 +36,7 @@ export interface UseHotkeyOptions extends Omit<HotkeyOptions, 'target'> {
  * containing the hotkey string and parsed hotkey.
  *
  * This hook syncs the callback and options on every render to avoid
- * stale closures, similar to TanStack Pacer's pattern. This means
+ * stale closures. This means
  * callbacks that reference React state will always have access to
  * the latest values.
  *
@@ -102,7 +102,6 @@ export function useHotkey(
   const registrationRef = useRef<HotkeyRegistrationHandle | null>(null)
 
   // Refs to capture current values for use in effect without adding dependencies
-  // This follows TanStack Pacer's pattern - values are synced on every render
   const callbackRef = useRef(callback)
   const optionsRef = useRef(mergedOptions)
   const managerRef = useRef(manager)
@@ -178,7 +177,6 @@ export function useHotkey(
 
   // Sync callback and options on EVERY render (outside useEffect)
   // This avoids stale closures - the callback always has access to latest state
-  // Similar to TanStack Pacer's pattern: debouncer.fn = fn; debouncer.setOptions(options)
   if (registrationRef.current?.isActive) {
     registrationRef.current.callback = callback
     registrationRef.current.setOptions(optionsWithoutTarget)

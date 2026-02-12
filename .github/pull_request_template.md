@@ -4,7 +4,7 @@
 
 ## ✅ Checklist
 
-- [ ] I have followed the steps in the [Contributing guide](https://github.com/TanStack/pacer/blob/main/CONTRIBUTING.md).
+- [ ] I have followed the steps in the [Contributing guide](https://github.com/TanStack/hotkeys/blob/main/CONTRIBUTING.md).
 - [ ] I have tested this code locally with `pnpm run test:pr`.
 
 ## 🚀 Release Impact

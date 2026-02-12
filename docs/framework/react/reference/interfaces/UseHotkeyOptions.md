@@ -18,9 +18,9 @@ Defined in: [useHotkey.ts:17](https://github.com/TanStack/hotkeys/blob/main/pack
 ```ts
 optional target: 
   | HTMLElement
-  | RefObject<HTMLElement | null>
   | Document
   | Window
+  | RefObject<HTMLElement | null>
   | null;
 ```
 
