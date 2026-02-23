@@ -51,7 +51,7 @@
     "src"
   ],
   "dependencies": {
-    "@tanstack/angular-store": "^0.8.0",
+    "@tanstack/angular-store": "^0.9.1",
     "@tanstack/hotkeys": "workspace:*"
   },
   "peerDependencies": {
