@@ -5,7 +5,7 @@ title: AngularHotkeyRecorder
 
 # Interface: AngularHotkeyRecorder
 
-Defined in: [injectHotkeyRecorder.ts:7](https://github.com/TanStack/hotkeys/blob/main/packages/angular-hotkeys/src/injectHotkeyRecorder.ts#L7)
+Defined in: [injectHotkeyRecorder.ts:15](https://github.com/TanStack/hotkeys/blob/main/packages/angular-hotkeys/src/injectHotkeyRecorder.ts#L15)
 
 ## Properties
 
@@ -15,7 +15,7 @@ Defined in: [injectHotkeyRecorder.ts:7](https://github.com/TanStack/hotkeys/blob
 readonly cancelRecording: () => void;
 ```
 
-Defined in: [injectHotkeyRecorder.ts:17](https://github.com/TanStack/hotkeys/blob/main/packages/angular-hotkeys/src/injectHotkeyRecorder.ts#L17)
+Defined in: [injectHotkeyRecorder.ts:25](https://github.com/TanStack/hotkeys/blob/main/packages/angular-hotkeys/src/injectHotkeyRecorder.ts#L25)
 
 Cancel recording without saving
 
@@ -31,7 +31,7 @@ Cancel recording without saving
 readonly isRecording: () => boolean;
 ```
 
-Defined in: [injectHotkeyRecorder.ts:9](https://github.com/TanStack/hotkeys/blob/main/packages/angular-hotkeys/src/injectHotkeyRecorder.ts#L9)
+Defined in: [injectHotkeyRecorder.ts:17](https://github.com/TanStack/hotkeys/blob/main/packages/angular-hotkeys/src/injectHotkeyRecorder.ts#L17)
 
 Whether recording is currently active
 
@@ -47,7 +47,7 @@ Whether recording is currently active
 readonly recordedHotkey: () => Hotkey | null;
 ```
 
-Defined in: [injectHotkeyRecorder.ts:11](https://github.com/TanStack/hotkeys/blob/main/packages/angular-hotkeys/src/injectHotkeyRecorder.ts#L11)
+Defined in: [injectHotkeyRecorder.ts:19](https://github.com/TanStack/hotkeys/blob/main/packages/angular-hotkeys/src/injectHotkeyRecorder.ts#L19)
 
 The currently recorded hotkey (for live preview)
 
@@ -63,7 +63,7 @@ The currently recorded hotkey (for live preview)
 readonly startRecording: () => void;
 ```
 
-Defined in: [injectHotkeyRecorder.ts:13](https://github.com/TanStack/hotkeys/blob/main/packages/angular-hotkeys/src/injectHotkeyRecorder.ts#L13)
+Defined in: [injectHotkeyRecorder.ts:21](https://github.com/TanStack/hotkeys/blob/main/packages/angular-hotkeys/src/injectHotkeyRecorder.ts#L21)
 
 Start recording a new hotkey
 
@@ -79,7 +79,7 @@ Start recording a new hotkey
 readonly stopRecording: () => void;
 ```
 
-Defined in: [injectHotkeyRecorder.ts:15](https://github.com/TanStack/hotkeys/blob/main/packages/angular-hotkeys/src/injectHotkeyRecorder.ts#L15)
+Defined in: [injectHotkeyRecorder.ts:23](https://github.com/TanStack/hotkeys/blob/main/packages/angular-hotkeys/src/injectHotkeyRecorder.ts#L23)
 
 Stop recording (same as cancel)
 
