@@ -12,7 +12,7 @@ Defined in: [hotkeys-provider.ts:13](https://github.com/TanStack/hotkeys/blob/ma
 ### defaultOptions
 
 ```ts
-defaultOptions: HotkeysProviderOptions;
+readonly defaultOptions: HotkeysProviderOptions;
 ```
 
 Defined in: [hotkeys-provider.ts:14](https://github.com/TanStack/hotkeys/blob/main/packages/angular-hotkeys/src/hotkeys-provider.ts#L14)
