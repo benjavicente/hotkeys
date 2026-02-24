@@ -1,7 +1,15 @@
-import { injectStore } from '@tanstack/angular-store'
-import { DestroyRef, effect, inject } from '@angular/core'
+import {
+  DestroyRef,
+  computed,
+  effect,
+  inject,
+  linkedSignal,
+  untracked,
+} from '@angular/core'
 import { HotkeyRecorder } from '@tanstack/hotkeys'
 import { injectDefaultHotkeysOptions } from './hotkeys-provider'
+import type { Atom, ReadonlyAtom } from '@tanstack/angular-store'
+import type { Signal } from '@angular/core'
 import type { Hotkey, HotkeyRecorderOptions } from '@tanstack/hotkeys'
 
 export interface AngularHotkeyRecorder {
@@ -53,40 +61,68 @@ export function injectHotkeyRecorder(
   const defaultOptions = injectDefaultHotkeysOptions()
   const destroyRef = inject(DestroyRef)
 
-  const resolvedOptions = typeof options === 'function' ? options() : options
-  const mergedOptions = {
-    ...defaultOptions.hotkeyRecorder,
-    ...resolvedOptions,
-  } as HotkeyRecorderOptions
+  // Stable signal to lazy initialize the recorder
+  const recorderSignal = computed(() =>
+    untracked(() => {
+      const resolvedOptions =
+        typeof options === 'function' ? options() : options
 
-  // Create recorder once synchronously (matches React's useRef pattern)
-  const recorder = new HotkeyRecorder(mergedOptions)
+      const mergedOptions = {
+        ...defaultOptions.hotkeyRecorder,
+        ...resolvedOptions,
+      } as HotkeyRecorderOptions
 
-  // Subscribe to recorder state using useStore (same pattern as useHotkeyRecorder)
-  const isRecording = injectStore(recorder.store, (state) => state.isRecording)
-  const recordedHotkey = injectStore(
-    recorder.store,
+      return new HotkeyRecorder(mergedOptions)
+    }),
+  )
+
+  // Subscribe to recorder state
+  const recorderStore = computed(() => untracked(() => recorderSignal().store))
+  const isRecording = injectLazyStore(
+    recorderStore,
+    (state) => state.isRecording,
+  )
+  const recordedHotkey = injectLazyStore(
+    recorderStore,
     (state) => state.recordedHotkey,
   )
 
   // Sync options on every effect run (matches React's sync on render)
   effect(() => {
     const resolved = typeof options === 'function' ? options() : options
-    recorder.setOptions({
+    recorderSignal().setOptions({
       ...defaultOptions.hotkeyRecorder,
       ...resolved,
     } as HotkeyRecorderOptions)
   })
 
   destroyRef.onDestroy(() => {
-    recorder.destroy()
+    recorderSignal().destroy()
   })
 
   return {
     isRecording,
     recordedHotkey,
-    startRecording: () => recorder.start(),
-    stopRecording: () => recorder.stop(),
-    cancelRecording: () => recorder.cancel(),
+    startRecording: () => recorderSignal().start(),
+    stopRecording: () => recorderSignal().stop(),
+    cancelRecording: () => recorderSignal().cancel(),
   }
+}
+
+function injectLazyStore<TState, TSelected = NoInfer<TState>>(
+  storeSignal: Signal<Atom<TState> | ReadonlyAtom<TState>>,
+  selector: (state: NoInfer<TState>) => TSelected,
+): Signal<TSelected> {
+  const slice = linkedSignal(() => selector(storeSignal().get()))
+
+  effect((onCleanup) => {
+    const currentStore = storeSignal()
+    slice.set(selector(currentStore.get()))
+    const { unsubscribe } = currentStore.subscribe((s) => {
+      slice.set(selector(s))
+    })
+    onCleanup(() => unsubscribe())
+  })
+
+  return slice.asReadonly()
 }
