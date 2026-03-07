@@ -16,12 +16,12 @@
     "react-dom": "^19.2.4"
   },
   "devDependencies": {
-    "@tanstack/react-devtools": "0.9.6",
+    "@tanstack/react-devtools": "0.9.10",
     "@tanstack/react-hotkeys-devtools": "^0.3.3",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.4",
-    "typescript": "5.8.3",
+    "typescript": "5.9.3",
     "vite": "^7.3.1"
   }
 }
