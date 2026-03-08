@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 import {
-  provideExperimentalZonelessChangeDetection,
+  provideZonelessChangeDetection,
   signal,
 } from '@angular/core'
 import { TestBed } from '@angular/core/testing'
@@ -12,7 +12,7 @@ describe('injectHotkey', () => {
   beforeEach(() => {
     HotkeyManager.resetInstance()
     TestBed.configureTestingModule({
-      providers: [provideExperimentalZonelessChangeDetection()],
+      providers: [provideZonelessChangeDetection()],
     })
   })
 
